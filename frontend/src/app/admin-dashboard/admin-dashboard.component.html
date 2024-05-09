@@ -1,0 +1,757 @@
+
+  <head>
+
+    <link
+      href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+  </head>
+
+  <body id="page-top">
+    <div class="modal" id="myModal" #myModal>
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Create New  Data</h4>
+            <button
+              type="button"
+              class="btn-close"
+              (click)="closeModel()"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-8">
+                <label for="">Username</label>
+                <input
+                  type="text"
+                  [(ngModel)]="userObj.username"
+                  class="form-control"
+                  placeholder="Enter new Username"
+                  required
+                />
+              </div>
+              <div class="col-8">
+                <label for="" *ngIf="!userObj.userID">password</label>
+                <input
+                  type="password"
+                  [(ngModel)]="userObj.password" *ngIf="!userObj.userID"
+                  class="form-control"
+                  placeholder="Enter new password"
+                  required
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <label for="">Role</label>
+                <select class="form-control" [(ngModel)]="userObj.roleID">
+                  <option *ngIf="showAdministrators" [ngValue]="'admin'">admin</option>
+                  <option *ngIf="showFinanciers" [ngValue]="'financier'">financier</option>
+                  <option *ngIf="showSellers" [ngValue]="'seller'">seller</option>
+                  <option *ngIf="showBuyers" [ngValue]="'buyer'">buyer</option>
+                </select>
+                
+              </div>
+              <div class="col-6">
+                <label for="">company Name</label>
+                <input
+                  type="text"
+                  [(ngModel)]="userObj.companyName"
+                  class="form-control"
+                  placeholder="Enter company Name"
+                  required
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-4">
+                <label for="">contact Person</label>
+                <input
+                  type="text"
+                  [(ngModel)]="userObj.contactPerson"
+                  class="form-control"
+                  placeholder="Enter contact Person"
+                  required
+                />
+              </div>
+              <div class="col-4">
+                <label for="">email</label>
+                <input
+                  type="email"
+                  [(ngModel)]="userObj.email"
+                  class="form-control"
+                  placeholder="Enter email"
+                  required
+                  required
+                />
+              </div>
+              <div class="col-4">
+                <label for="">phone</label>
+                <input
+                  type="number"
+                  [(ngModel)]="userObj.phone"
+                  class="form-control"
+                  placeholder="Enter mobile number"
+                  required
+                />
+              </div>
+              
+              <div class="row">
+                <div class="col-6">
+                  <label for="">City</label>
+                  <input type="text" [(ngModel)]="userObj.city" class="form-control" placeholder="Enter city name">
+                </div>
+                <div class="col-6">
+                  <label for="">country</label>
+                  <input type="text" [(ngModel)]="userObj.country" class="form-control" placeholder="Enter country name" required>
+                </div>
+              </div>
+              
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <label for="">address</label>
+                <textarea
+                  rows="3"
+                  [(ngModel)]="userObj.address"
+                  class="form-control"
+                  placeholder="Enter Address"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" (click)="closeModel()">
+              Close
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              (click)="saveUser()"
+              *ngIf="!userObj.userID"
+            >
+              Save Data
+            </button>
+            <button
+              id="editbtn"
+              type="button"
+              class="btn btn-success"
+              (click)="editUser()"
+              *ngIf="userObj.userID"
+            >
+            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="wrapper">
+      <!-- Sidebar -->
+      <ul
+        class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
+        id="accordionSidebar"
+      >
+        <!-- Sidebar - logo -->
+        <a
+          class="sidebar-brand d-flex align-items-center justify-content-center"
+          routerLink="/adminDashboard"
+        >
+          <div class="sidebar-brand-icon rotate-n-15">
+            <i class="fas fa-laugh-wink"></i>
+          </div>
+          <div class="sidebar-brand-text mx-3">Admin</div>
+        </a>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider my-0" />
+
+        <!-- Nav Item - Dashboard -->
+        <li class="nav-item" [ngClass]="{ active: showDashboard }">
+          <a
+            class="nav-link"
+            (click)="
+              showAdministrators = false;
+              showDashboard = true;
+              showFinanciers = false;
+              showBuyers = false;
+              showSellers = false
+            "
+            class="nav-link cursor-pointer"
+          >
+            <i class="fa fa-tachometer" aria-hidden="true"></i>
+            <span>Dashboard</span></a
+          >
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider" />
+
+        <!-- Heading -->
+        <div class="sidebar-heading">Interface</div>
+
+        <li class="nav-item" [ngClass]="{ active: showAdministrators }">
+          <a
+            class="nav-link"
+            (click)="
+              showAdministrators = true;
+              showDashboard = false;
+              showFinanciers = false;
+              showBuyers = false;
+              showSellers = false;
+              toggleRole('1');
+              refreshData()
+            "
+            class="nav-link cursor-pointer"
+          >
+            <i class="fa fa-cog"></i>
+            <span>Administrators</span>
+          </a>
+        </li>
+
+        <li class="nav-item" [ngClass]="{ active: showBuyers }">
+          <a
+            class="nav-link"
+            (click)="
+              showDashboard = false;
+              showAdministrators = false;
+              showFinanciers = false;
+              showBuyers = true;
+              showSellers = false;
+              toggleRole('3');
+              refreshData()
+            "
+            class="nav-link cursor-pointer"
+          >
+            <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+            <span>Buyers</span>
+          </a>
+        </li>
+
+        <li class="nav-item" [ngClass]="{ active: showSellers }">
+          <a
+            class="nav-link"
+            (click)="
+              showDashboard = false;
+              showAdministrators = false;
+              showFinanciers = false;
+              showBuyers = false;
+              showSellers = true;
+              toggleRole('2');
+              refreshData()
+            "
+            class="nav-link cursor-pointer"
+          >
+            <i class="fa fa-sellsy" aria-hidden="true"></i>
+            <span>Sellers</span>
+          </a>
+        </li>
+
+        <li class="nav-item" [ngClass]="{ active: showFinanciers }">
+          <a
+            class="nav-link"
+            (click)="
+              showDashboard = false;
+              showAdministrators = false;
+              showFinanciers = true;
+              showBuyers = false;
+              showSellers = false;
+              toggleRole('4');
+              refreshData()
+            "
+            class="nav-link cursor-pointer"
+          >
+            <i class="fa fa-credit-card" aria-hidden="true"></i>
+            <span>Financiers</span>
+          </a>
+        </li>
+        <!-- Divider -->
+        <hr class="sidebar-divider" />
+
+        <li class="nav-item">
+          <a class="nav-link" href="#">
+            <i class="fas fa-fw fa-chart-area"></i>
+            <span>Charts</span></a
+          >
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider d-none d-md-block" />
+      </ul>
+      <!-- End of Sidebar -->
+
+      <!-- Content Wrapper -->
+      <div id="content-wrapper" class="d-flex flex-column">
+        <!-- Main Content -->
+        <div id="content">
+          <!-- Topbar -->
+          <nav
+            class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow"
+          >
+            <!-- Sidebar Toggle (Topbar) -->
+            <button
+              id="sidebarToggleTop"
+              class="btn btn-link d-md-none rounded-circle mr-3"
+            >
+              <i class="fa fa-bars"></i>
+            </button>
+
+            <!-- Topbar Search -->
+            <form
+              class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search"
+            >
+              <div class="input-group">
+                <input
+                  type="text"
+                  class="form-control bg-light border-0 small"
+                  placeholder="Search for..."
+                  aria-label="Search"
+                  aria-describedby="basic-addon2"
+                />
+                <div class="input-group-append">
+                  <button class="btn btn-primary" type="button">
+                    <i class="fa fa-search"></i>
+                  </button>
+                </div>
+              </div>
+            </form>
+
+            <!-- Topbar Navbar -->
+            <ul class="navbar-nav ml-auto">
+              <div class="topbar-divider d-none d-sm-block"></div>
+
+              <!-- Nav Item - User Information -->
+              <li class="nav-item dropdown no-arrow">
+                <a
+                  class="nav-link dropdown-toggle"
+                  href="#"
+                  id="userDropdown"
+                  role="button"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  <span
+                    id="username"
+                    class="mr-2 d-none d-lg-inline text-gray-600 small"
+                  >
+                    Welcome {{ username }}</span
+                  >
+                  <img
+                    class="img-profile rounded-circle"
+                    src="https://t4.ftcdn.net/jpg/05/89/93/27/360_F_589932782_vQAEAZhHnq1QCGu5ikwrYaQD0Mmurm0N.jpg"
+                  />
+                </a>
+                <!-- Dropdown - User Information -->
+                <div
+                  class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                  aria-labelledby="userDropdown"
+                >
+                  <a class="dropdown-item" href="#">
+                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                    Profile
+                  </a>
+                  <a class="dropdown-item" href="#">
+                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                    Settings
+                  </a>
+                  <a class="dropdown-item" href="#">
+                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+                    Activity Log
+                  </a>
+                  <div class="dropdown-divider"></div>
+                  <a
+                    class="dropdown-item"
+                    href="#"
+                    data-toggle="modal"
+                    data-target="#logoutModal"
+                  >
+                    <i
+                      class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"
+                    ></i>
+                    Logout
+                  </a>
+                </div>
+              </li>
+            </ul>
+          </nav>
+          <!-- End of Topbar -->
+
+          <!-- Begin Page Content -->
+          <div class="container-fluid">
+            <!-- Page Heading -->
+
+            <div *ngIf="showDashboard">
+              <!-- Dashboard content -->
+              <div
+                class="d-sm-flex align-items-center justify-content-between mb-4"
+              >
+                <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+                <a
+                  href="#"
+                  class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
+                  ><i class="fa fa-list-alt" aria-hidden="true"></i> Generate
+                  Report</a
+                >
+              </div>
+              <div class="row">
+
+                <!-- Earnings (Monthly) Card Example -->
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-primary shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1" style="font-size: small;">
+                                        Total Administators</div>
+                                    <div class="h5 mb-0 font-weight-bold" style="color:gray; font-weight: bold">{{admin}}</div>
+                                </div>
+                                <div class="col-auto">
+                                  <i class="fa fa-lock fa-2x" style="color:gray; font-weight: 300;" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+  
+                <!-- Earnings (Monthly) Card Example -->
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-success shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1" style="font-size: small;">
+                                        Total Buyers</div>
+                                    <div class="h5 mb-0 font-weight-bold" style="color:gray; font-weight: bold">{{buyer}}</div>
+                                </div>
+                                <div class="col-auto">
+                                  <i class="fa fa-inr fa-2x" style="color:gray; font-weight: 300;" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+  
+                <!-- Earnings (Monthly) Card Example -->
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-info shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1" style="font-size: small;">Total Sellers
+                                    </div>
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col-auto">
+                                            <div class="h5 mb-0 mr-3 font-weight-bold" style="color:gray; font-weight: bold">{{seller}}</div>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                  <i class="fa fa-tasks fa-2x" style="color:gray; font-weight: 300;" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+  
+                <!-- Pending Requests Card Example -->
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-warning shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1" style="font-size: small;">
+                                        Total Financers</div>
+                                    <div class="h5 mb-0 font-weight-bold" style="color:gray; font-weight: bold">{{financier}}</div>
+                                </div>
+                                <div class="col-auto">
+                                  <i class="fa fa-comments fa-2x" style="color:gray; font-weight: 300;" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+  
+  
+            <div class="row">
+  
+              <!-- Area Chart -->
+              <div class="col-xl-8 col-lg-7">
+                  <div class="card shadow mb-4">
+                    <div
+                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Earning Overview</h6>
+                      
+                     </div>
+                      <demo-create-barchart></demo-create-barchart>
+                  </div>
+              </div>
+  
+              <!-- Pie Chart -->
+              <div class="col-xl-4 col-lg-5">
+                  <div class="card shadow mb-4">
+                    <div
+                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Status Overview</h6>
+                      
+                     </div>
+                      <demo-create-piechart></demo-create-piechart>
+                  </div>
+              </div>
+          </div>
+
+
+            </div>
+
+            <div *ngIf="showAdministrators">
+              <!-- Administrators content -->
+              <div class="row pt-3">
+                <div class="col text-center">
+                  <h3>administrator</h3>
+                  <button class="btn btn-outline-success" (click)="openModel()">
+                    Add New administator
+                  </button>
+                </div>
+              </div>
+
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>username</th>
+                    <th>role</th>
+                    <th>Company Name</th>
+                    <th>Contact Person</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Address</th>
+                    <th>City</th>
+                    <th>Country</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for(user of users; track user.id){
+                  <tr>
+                    <td>{{ user.userID }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ roleData.role }}</td>
+                    <td>{{ user.companyName }}</td>
+                    <td>{{ user.contactPerson }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.phone }}</td>
+                    <td>{{ user.address }}</td>
+                    <td>{{ user.city }}</td>
+                    <td>{{ user.country }}</td>
+                    <td>
+                      <button
+                        type="button"
+                        class="btn btn-warning action"
+                        (click)="editModel(user)"
+                      >
+                      <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                      </button> 
+                      <button type="button" class="btn btn-danger action" (click)="deleteUser(user.userID)">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+
+            <div *ngIf="showFinanciers">
+              <!-- Financiers content -->
+              <div class="row pt-3">
+                <div class="col text-center">
+                  <h3>Financiers</h3>
+                  <button class="btn btn-outline-success" (click)="openModel()">
+                    Add New Financiers
+                  </button>
+                </div>
+              </div>
+
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>username</th>
+                    <th>role</th>
+                    <th>Company Name</th>
+                    <th>Contact Person</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Address</th>
+                    <th>City</th>
+                    <th>Country</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for(user of users; track user.id){
+                  <tr>
+                    <td>{{ user.userID }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ roleData.role }}</td>
+                    <td>{{ user.companyName }}</td>
+                    <td>{{ user.contactPerson }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.phone }}</td>
+                    <td>{{ user.address }}</td>
+                    <td>{{ user.city }}</td>
+                    <td>{{ user.country }}</td>
+                    <td>
+                      <button
+                        type="button"
+                        class="btn btn-warning action"
+                        (click)="editModel(user)"
+                      >
+                      <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                      </button>
+                      <button type="button" class="btn btn-danger action" (click)="deleteUser(user.userID)">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+
+            <div *ngIf="showSellers">
+              <!-- Financiers content -->
+              <div class="row pt-3">
+                <div class="col text-center">
+                  <h3>Sellers</h3>
+                  <button class="btn btn-outline-success" (click)="openModel()">
+                    Add New Sellers
+                  </button>
+                </div>
+              </div>
+
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>username</th>
+                    <th>role</th>
+                    <th>Company Name</th>
+                    <th>Contact Person</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Address</th>
+                    <th>City</th>
+                    <th>Country</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for(user of users; track user.id){
+                  <tr>
+                    <td>{{ user.userID }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ roleData.role }}</td>
+                    <td>{{ user.companyName }}</td>
+                    <td>{{ user.contactPerson }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.phone }}</td>
+                    <td>{{ user.address }}</td>
+                    <td>{{ user.city }}</td>
+                    <td>{{ user.country }}</td>
+                    <td>
+                      <button
+                        type="button"
+                        class="btn btn-warning action"
+                        (click)="editModel(user)"
+                      >
+                      <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                      </button>
+                      <button type="button" class="btn btn-danger action" (click)="deleteUser(user.userID)">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+
+            <div *ngIf="showBuyers">
+              <!-- Financiers content -->
+              <div class="row pt-3">
+                <div class="col text-center">
+                  <h3>Buyers</h3>
+                  <button class="btn btn-outline-success" (click)="openModel()">
+                    Add New Buyers
+                  </button>
+                </div>
+              </div>
+
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>username</th>
+                    <th>role</th>
+                    <th>Company Name</th>
+                    <th>Contact Person</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Address</th>
+                    <th>City</th>
+                    <th>Country</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for(user of users; track user.id){
+                  <tr>
+                    <td>{{ user.userID }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ roleData.role }}</td>
+                    <td>{{ user.companyName }}</td>
+                    <td>{{ user.contactPerson }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.phone }}</td>
+                    <td>{{ user.address }}</td>
+                    <td>{{ user.city }}</td>
+                    <td>{{ user.country }}</td>
+                    <td>
+                      <button
+                        type="button"
+                        class="btn btn-warning action"
+                        (click)="editModel(user)"
+                      >
+                      <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                      </button>
+                      <button type="button" class="btn btn-danger action" (click)="deleteUser(user.userID)">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <!-- /.container-fluid -->
+        </div>
+        <!-- End of Main Content -->
+
+        <!-- Footer -->
+        
+        <!-- End of Footer -->
+      </div>
+      <!-- End of Content Wrapper -->
+    </div>
+    <!-- End of Page Wrapper -->
+
+  </body>
+
