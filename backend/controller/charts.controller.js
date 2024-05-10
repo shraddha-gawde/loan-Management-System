@@ -101,6 +101,30 @@ const getInvoicesByStatus = async (req, res) => {
     }
 };
 
+
+const totalinvoicesAccepted = async (req, res) => {
+  try {
+      const totalCount = await invoiceModel.count({
+          where: {
+              accepted_by: { [Op.not]: null }
+          }
+      });
+      const totalCountNull = await invoiceModel.count({
+        where: {
+            accepted_by: { [Op.not]: null },
+            disbursed_by : null
+        }
+    });
+
+      res.status(200).json({ totalCount, totalCountNull });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
+
 const disburseAmountsSeller = async (req, res) => {
   const userID = req.userID;
   try {
@@ -139,11 +163,42 @@ const disburseAmountsSeller = async (req, res) => {
 };
 
 
+const disburseAmountsFinancier = async (req, res) => {
+  const userID = req.userID;
+  console.log(userID)
+  try {
+      const [disbursedNullAmount, disbursedNotNullAmount] = await Promise.all([
+          invoiceModel.sum('total_amount_due', {
+              where: {
+                  accepted_by: { [Op.not]: null },
+                  disbursed_by: null
+              }
+          }),
+          invoiceModel.sum('total_amount_due', {
+              where: {
+                  accepted_by: { [Op.not]: null },
+                  disbursed_by: userID
+              }
+          })
+      ]);
+      res.status(200).json({
+          disbursedNullAmount,
+          disbursedNotNullAmount,
+      });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
   module.exports = {
     getInvoicesByStatus,
     getCountByDate,
     disburseAmounts, 
     countbatches,
     totalBatches,
-    disburseAmountsSeller
+    disburseAmountsSeller,
+    totalinvoicesAccepted,
+    disburseAmountsFinancier
   }

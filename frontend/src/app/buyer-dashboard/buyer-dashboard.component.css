@@ -136,6 +136,17 @@ margin-top: 23px;
     padding-bottom: 10px;
 }
 
+.tableDiv{
+  /* display: flex; */
+  /* justify-content: center; */
+  border-color: #b3b3b3;
+  border-radius: 15px;
+  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin: auto;
+}
+
 tbody, tr{
   border: solid 1px #b3b3b3;
   margin: auto;

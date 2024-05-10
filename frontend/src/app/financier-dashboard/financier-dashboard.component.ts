@@ -10,6 +10,8 @@ import {
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { FormsModule, NgForm, ReactiveFormsModule } from '@angular/forms';
+import { CreatePiechartComponent } from '../create-piechart/create-piechart.component';
+import { CreateBarchartComponent } from '../create-barchart/create-barchart.component';
 
 @Component({
   selector: 'demo-financier-dashboard',
@@ -20,6 +22,8 @@ import { FormsModule, NgForm, ReactiveFormsModule } from '@angular/forms';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
+    CreatePiechartComponent,
+    CreateBarchartComponent
   ],
   templateUrl: './financier-dashboard.component.html',
   styleUrl: './financier-dashboard.component.css'
@@ -38,7 +42,37 @@ export class FinancierDashboardComponent implements OnInit {
   uploadStatus: string = '';
   uploadBOX = false;
   roleID: any;
+  pending= 0;
+disbursedNullAmount = 0
+disbursedNotNullAmount = 0 ;
+totalBatches = 0
 
+
+
+generalData(){
+  this.httpClient
+      .get<any>(`${this.baseURL}countInvoices`, {
+        headers: this.authService.getTokenHeaders(),
+      })
+      .subscribe((Response) => {
+        this.totalBatches = Response.totalCount;
+        this.pending = Response.totalCountNull
+      })
+
+      this.httpClient
+      .get<any>(`${this.baseURL}amountFinance`, {
+        headers: this.authService.getTokenHeaders(),
+      })
+      .subscribe((Response) => {
+        console.log(Response);
+        this.disbursedNullAmount = Response.disbursedNullAmount;
+        this.disbursedNotNullAmount = Response.disbursedNotNullAmount;
+        // this.pending = Response.disbursedNullCount
+        // console.log(this.disbursedNullAmount) 
+        // console.log(this.disbursedNotNullAmount)
+      })
+
+}
   constructor(private authService: AuthService) {}
   httpClient = inject(HttpClient);
 
@@ -48,6 +82,7 @@ export class FinancierDashboardComponent implements OnInit {
     this.username = userData ? JSON.parse(userData) : null;
     console.log(this.username);
     this.refreshData();
+    this.generalData()
   }
 
   batchObj: batchData = new batchData();

@@ -15,7 +15,8 @@ const { access } = require("../middlewares/acess.middleware");
 const {  getInvoices, uploadInvoiceBatch, getinvoiceByID, downloadExcel,  getInvoiceBatch, getInvoiceBatchByUser, acceptInvoiceBySeller, getInvoicesAcceptedBySeller, rejectInvoiceBySeller } = require("../controller/dashboard.controller");
 const upload = require("../middlewares/multer.middleware");
 const { disburseInvoiceByFinancier, getAllInvoicesAcceptedBySellers } = require("../controller/finacier.controller");
-const { getInvoicesByStatus, getCountByDate, getTotalEarningsMonthly, getTotalEarningsYearly, countbatches, totalBatches, disburseAmounts, disburseAmountsSeller } = require("../controller/charts.controller");
+const { getInvoicesByStatus, getCountByDate, getTotalEarningsMonthly, getTotalEarningsYearly, countbatches, totalBatches, disburseAmounts, disburseAmountsSeller, totalinvoicesAccepted, disburseAmountsFinancier } = require("../controller/charts.controller");
+const { report, exportExcel, exportPdf } = require("../controller/report.controller");
 
 router.use(express.json())
 
@@ -49,6 +50,9 @@ router.get('/amountDisbusre', access(['chartData']), disburseAmounts)
 router.get('/totalBatches', access(['chartData']), countbatches)
 router.get('/allBatches', access(['chartData']), totalBatches)
 router.get('/amount', access(['chartData']), disburseAmountsSeller)
+router.get('/countInvoices', access(['chartData']), totalinvoicesAccepted)
+router.get('/amountFinance', access(['chartData']), disburseAmountsFinancier)
+
 // seller routes 
 router.get("/invoices", access(['getInvoicesAcceptedBySeller']), getInvoicesAcceptedBySeller)
 
@@ -62,7 +66,9 @@ router.patch("/disburse/:id", access(["disburseInvoiceByFinancier"]), disburseIn
 router.get("/allInvoices", access(["disburseInvoiceByFinancier"]), getAllInvoicesAcceptedBySellers)
 
 
-
+router.post('/report', access(['chartData']), report)
+router.post('/exportexel', access(['chartData']), exportExcel)
+router.post('/exportpdf', access(['chartData']), exportPdf)
 
 
 module.exports = {

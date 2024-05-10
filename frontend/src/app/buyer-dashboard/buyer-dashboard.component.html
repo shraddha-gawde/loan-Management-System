@@ -38,7 +38,8 @@
             showDashboard = true;
             showPrograms = false;
             addPrograms = false;
-            showinvoices = false
+            showinvoices = false;
+            genarateReport = false
           "
           class="nav-link cursor-pointer"
         >
@@ -50,8 +51,6 @@
       <!-- Divider -->
       <!-- <hr class="sidebar-divider" />  -->
 
-      
-
       <li class="nav-item" [ngClass]="{ active: showPrograms }">
         <a
           class="nav-link"
@@ -61,7 +60,8 @@
             showPrograms = true;
             addPrograms = false;
             showinvoices = false;
-            batchTable = true
+            batchTable = true;
+            genarateReport = false
           "
           class="nav-link cursor-pointer"
         >
@@ -79,7 +79,8 @@
             showDashboard = false;
             showPrograms = false;
             addPrograms = true;
-            showinvoices = false
+            showinvoices = false;
+            genarateReport = false
           "
           class="nav-link cursor-pointer"
         >
@@ -200,15 +201,20 @@
             >
               <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
               <a
-                href="#"
                 class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
+                (click)="
+                  showDashboard = false;
+                  showPrograms = false;
+                  addPrograms = false;
+                  showinvoices = false;
+                  genarateReport = true
+                "
                 ><i class="fa fa-list-alt" aria-hidden="true"></i> Generate
                 Report</a
               >
             </div>
 
             <div class="row">
-              
               <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card border-left-primary shadow h-100 py-2">
                   <div class="card-body">
@@ -224,7 +230,8 @@
                           class="h5 mb-0 font-weight-bold"
                           style="color: gray; font-weight: bold"
                         >
-                        <i class="fa fa-inr" aria-hidden="true"></i>{{disbursedNotNullAmount}}
+                          <i class="fa fa-inr" aria-hidden="true"></i
+                          >{{ disbursedNotNullAmount }}
                         </div>
                       </div>
                       <div class="col-auto">
@@ -239,7 +246,6 @@
                 </div>
               </div>
 
-              
               <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card border-left-success shadow h-100 py-2">
                   <div class="card-body">
@@ -255,12 +261,13 @@
                           class="h5 mb-0 font-weight-bold"
                           style="color: gray; font-weight: bold"
                         >
-                        <i class="fa fa-inr" aria-hidden="true"></i>{{disbursedNullAmount}}
+                          <i class="fa fa-inr" aria-hidden="true"></i
+                          >{{ disbursedNullAmount }}
                         </div>
                       </div>
                       <div class="col-auto">
                         <i
-                          class="fa fa-spinner   fa-2x"
+                          class="fa fa-spinner fa-2x"
                           style="color: gray; font-weight: 300"
                           aria-hidden="true"
                         ></i>
@@ -270,7 +277,6 @@
                 </div>
               </div>
 
-              
               <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card border-left-info shadow h-100 py-2">
                   <div class="card-body">
@@ -288,7 +294,7 @@
                               class="h5 mb-0 mr-3 font-weight-bold"
                               style="color: gray; font-weight: bold"
                             >
-                              {{totalBatches}} Batches
+                              {{ totalBatches }} Batches
                             </div>
                           </div>
                         </div>
@@ -315,14 +321,14 @@
                           class="text-xs font-weight-bold text-warning text-uppercase mb-1"
                           style="font-size: small"
                         >
-                       Pending Invoices
+                          Pending Invoices
                         </div>
                         <div
                           class="h5 mb-0 font-weight-bold"
                           style="color: gray; font-weight: bold"
                         >
-                      {{pending}}  
-                      </div>
+                          {{ pending }}
+                        </div>
                       </div>
                       <div class="col-auto">
                         <i
@@ -345,7 +351,7 @@
                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
                   >
                     <h6 class="m-0 font-weight-bold text-primary">
-                      Invoice Update Dailly Activity
+                      Invoice Dailly Activity Update
                     </h6>
                   </div>
                   <demo-create-barchart></demo-create-barchart>
@@ -359,10 +365,279 @@
                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
                   >
                     <h6 class="m-0 font-weight-bold text-primary">
-                      Invoice Update Status
+                      Invoice Status Update
                     </h6>
                   </div>
                   <demo-create-piechart></demo-create-piechart>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="genarateReport">
+            <div class="container mt-5">
+              <h1>Generate Report</h1>
+              <div class="row mt-4">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="startDate">Start Date:</label>
+                    <input
+                      type="date"
+                      class="form-control"
+                      id="startDate"
+                      [(ngModel)]="startDate"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="endDate">End Date:</label>
+                    <input
+                      type="date"
+                      class="form-control"
+                      id="endDate"
+                      [(ngModel)]="endDate"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="reportType">Report Type:</label>
+                    <select
+                      class="form-control"
+                      id="reportType"
+                      [(ngModel)]="reportType"
+                    >
+                      <option value="summary">Summary Report</option>
+                      <option value="detailed">Detailed Report</option>
+                      <!-- Add more report types as needed -->
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="row mt-3">
+                <div class="col-md-6">
+                  <button
+                    class="btn btn-primary"
+                    (click)="generateAndDisplayReport()"
+                  >
+                    Generate Report
+                  </button>
+                  <button
+                    class="btn btn-secondary ml-2"
+                    (click)="exportReport('pdf')"
+                  >
+                    Export as PDF
+                  </button>
+                  <button
+                    class="btn btn-secondary ml-2"
+                    (click)="exportReport('csv')"
+                  >
+                    Export as CSV
+                  </button>
+                  <!-- Add more export options as needed -->
+                </div>
+              </div>
+              <div class="row mt-4" >
+                <div class="col-md-12">
+                 
+                    <div id="reportResult">
+                    <!-- Display generated report here -->
+                    
+                    <div *ngIf="reportData && reportType === 'summary'" >
+                      
+                      <div class="tableDiv" id="content" #content>
+                        <h2>summary report :</h2>
+                        <table *ngIf="reportData">
+                          <thead>
+                            <tr>
+                              <th>#</th>
+                              <th>details</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>Total Batch Created:</td>
+                              <td>{{ reportData.totalBatchCount }} Batches</td>
+                            </tr>
+                            <tr>
+                              <td>Total uploaded invoices:</td>
+                              <td>
+                                {{ reportData.invoiceCounts[3].count }} Invoices
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Total disbursed invoices:</td>
+                              <td>
+                                {{ reportData.invoiceCounts[0].count }} Invoices
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Total accepted invoices:</td>
+                              <td>
+                                {{ reportData.invoiceCounts[1].count }} Invoices
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Total rejected invoices:</td>
+                              <td>
+                                {{ reportData.invoiceCounts[2].count }} Invoices
+                              </td>
+                            </tr>
+
+                            <tr>
+                              <td>total Disbursed Amounts:</td>
+                              <td>
+                                <i class="fa fa-inr" aria-hidden="true"></i>
+                                {{ reportData.disbursedNotNullAmount }}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>total pending Disbursed Amounts:</td>
+                              <td>
+                                <i class="fa fa-inr" aria-hidden="true"></i>
+                                {{ reportData.disbursedNullAmount }}
+                              </td>
+                            </tr>
+                            <tr>
+                              date Wise invoice Ceation:
+                            </tr>
+                            <tr>
+                              <td>{{ reportData.latestFiveDates[0].date }}</td>
+                              <td>
+                                {{
+                                  reportData.latestFiveDates[0].count
+                                }}
+                                Invoices
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>{{ reportData.latestFiveDates[1].date }}</td>
+                              <td>
+                                {{
+                                  reportData.latestFiveDates[1].count
+                                }}
+                                Invoices
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>{{ reportData.latestFiveDates[2].date }}</td>
+                              <td>
+                                {{
+                                  reportData.latestFiveDates[2].count
+                                }}
+                                Invoices
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+
+                      
+                    </div>
+                    <div *ngIf="reportData && reportType === 'detailed'">
+                      <h2>Detailed report :</h2>
+                      
+                      <div class="tableDiv" id="detailedcontent" #detailedcontent>
+
+                        <h2>Disbursed Invoices :</h2>
+                          <table *ngIf="reportData.disbursedInvoices && reportData.disbursedInvoices.length > 0" style="margin-bottom: 25px;">
+                              <!-- Table header -->
+                              <thead>
+                                  <tr>
+                                      <th>Invoice Number</th>
+                                      <th>Invoice Amount</th>
+                                      <th>Batch ID</th>
+                                      <th>Disbursed By</th>
+                                  </tr>
+                              </thead>
+                              <!-- Table body -->
+                              <tbody>
+                                  <!-- Table rows -->
+                                  <tr *ngFor="let invoice of reportData.disbursedInvoices">
+                                      <td>{{ invoice.invoice_number }}</td>
+                                      <td>{{ invoice.total_amount_due }}</td>
+                                      <td>{{ invoice.Batch_ID.BatchID }}</td>
+                                      <td>{{ invoice.disbursedByInvoice.username }}</td>
+                                  </tr>
+                              </tbody>
+                          </table>
+                          <h2>Accepted Invoices: </h2>
+                          <table *ngIf="reportData.acceptedInvoices && reportData.acceptedInvoices.length > 0" style="margin-bottom: 25px;">
+                              <!-- Table header -->
+                              <thead>
+                                  <tr>
+                                      <th>Invoice Number</th>
+                                      <th>Invoice Amount</th>
+                                      <th>Batch ID</th>
+                                      <th>Accepted By</th>
+                                  </tr>
+                              </thead>
+                              <!-- Table body -->
+                              <tbody>
+                                  <!-- Table rows -->
+                                  <tr *ngFor="let invoice of reportData.acceptedInvoices">
+                                      <td>{{ invoice.invoice_number }}</td>
+                                      <td>{{ invoice.total_amount_due }}</td>
+                                      <td>{{ invoice.Batch_ID.BatchID }}</td>
+                                      <td>{{ invoice.acceptedByInvoice.username }}</td>
+                                  </tr>
+                              </tbody>
+                          </table>
+                          <h2>Rejected Invoices: </h2>
+                          <table *ngIf="reportData.rejectedInvoices && reportData.rejectedInvoices.length > 0" style="margin-bottom: 25px;">
+                              <!-- Table header -->
+                              <thead>
+                                  <tr>
+                                      <th>Invoice Number</th>
+                                      <th>Invoice Amount</th>
+                                      <th>Batch ID</th>
+                                      <th>Rejected By</th>
+                                  </tr>
+                              </thead>
+                              <!-- Table body -->
+                              <tbody>
+                                  <!-- Table rows -->
+                                  <tr *ngFor="let invoice of reportData.rejectedInvoices">
+                                      <td>{{ invoice.invoice_number }}</td>
+                                      <td>{{ invoice.total_amount_due }}</td>
+                                      <td>{{ invoice.Batch_ID.BatchID }}</td>
+                                      <td>{{ invoice.rejectedByInvoice.username }}</td>
+                                  </tr>
+                              </tbody>
+                          </table>
+                          <h2>All Batches with Current Status :</h2>
+                          <table *ngIf="reportData.batches && reportData.batches.length > 0" style="margin-bottom: 25px;">
+                              <!-- Table header -->
+                              <thead>
+                                  <tr>
+                                      <th>Batch ID</th>
+                                      <th>Program Type</th>
+                                      <th>Region</th>
+                                      <th>Status</th>
+                                      <th>Accepted By</th>
+                                      <th>Disbursed By</th>
+                                      <th>Rejected By</th>
+                                  </tr>
+                              </thead>
+                              <!-- Table body -->
+                              <tbody>
+                                  <!-- Table rows -->
+                                  <tr *ngFor="let batch of reportData.batches">
+                                      <td>{{ batch.BatchID }}</td>
+                                      <td>{{ batch.programType }}</td>
+                                      <td>{{ batch.region }}</td>
+                                      <td>{{ batch.status }}</td>
+                                      <td>{{ batch.acceptedBy ? batch.acceptedBy.username : null }}</td>
+                                      <td>{{ batch.disbursedBy ? batch.disbursedBy.username : null }}</td>
+                                      <td>{{ batch.rejectedBy ? batch.rejectedBy.username : null}}</td>
+                                  </tr>
+                              </tbody>
+                          </table>
+                    </div>
+                  </div>
+                  </div>
                 </div>
               </div>
             </div>
