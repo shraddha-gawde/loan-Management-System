@@ -4,14 +4,15 @@ import { Chart, registerables } from 'chart.js';
 import { AuthService } from '../auth.service';
 
 Chart.register(...registerables);
+
 @Component({
-  selector: 'demo-create-barchart',
+  selector: 'demo-bar-chart-financier',
   standalone: true,
   imports: [HttpClientModule],
-  templateUrl: './create-barchart.component.html',
-  styleUrl: './create-barchart.component.css',
+  templateUrl: './bar-chart-financier.component.html',
+  styleUrl: './bar-chart-financier.component.css',
 })
-export class CreateBarchartComponent {
+export class BarChartFinancierComponent {
   httpClient = inject(HttpClient);
 
   readonly baseURL = 'http://localhost:8080/';
@@ -22,19 +23,26 @@ export class CreateBarchartComponent {
 
   constructor(private authService: AuthService) {}
 
-  count1 = 0;
-  count2 = 0;
-  count3 = 0;
-  count4 = 0;
-  count5 = 0;
+  acceptCount1 = 0;
+  acceptCount2 = 0;
+  acceptCount3 = 0;
+  acceptCount4 = 0;
+  acceptCount5 = 0;
+
+  rejectCount1 = 0;
+  rejectCount2 = 0;
+  rejectCount3 = 0;
+  rejectCount4 = 0;
+  rejectCount5 = 0;
 
   count1Label = '';
   count2Label = '';
   count3Label = '';
   count4Label = '';
   count5Label = '';
+
   RenderBarchart() {
-    const url = `${this.baseURL}dateCount`;
+    const url = `${this.baseURL}dateCountFinince`;
     this.httpClient
       .get<any>(url, {
         headers: this.authService.getTokenHeaders(),
@@ -45,23 +53,28 @@ export class CreateBarchartComponent {
           switch (index) {
             case 0:
               this.count1Label = this.formatDate(item.date);
-              this.count1 = item.count;
+              this.acceptCount1 = item.disbursed_count;
+              this.rejectCount1 = item.rejected_count;
               break;
             case 1:
               this.count2Label = this.formatDate(item.date);
-              this.count2 = item.count;
+              this.acceptCount2 = item.disbursed_count;
+              this.rejectCount2 = item.rejected_count;
               break;
             case 2:
               this.count3Label = this.formatDate(item.date);
-              this.count3 = item.count;
+              this.acceptCount3 = item.disbursed_count;
+              this.rejectCount3 = item.rejected_count;
               break;
             case 3:
               this.count4Label = this.formatDate(item.date);
-              this.count4 = item.count;
+              this.acceptCount4 = item.disbursed_count;
+              this.rejectCount4 = item.rejected_count;
               break;
             case 4:
               this.count5Label = this.formatDate(item.date);
-              this.count5 = item.count;
+              this.acceptCount5 = item.disbursed_count;
+              this.rejectCount5 = item.rejected_count;
               break;
             default:
               break;
@@ -73,12 +86,16 @@ export class CreateBarchartComponent {
         this.count3Label = this.count3Label || '';
         this.count4Label = this.count4Label || '';
         this.count5Label = this.count5Label || '';
-        this.count1 = this.count1 || 0;
-        this.count2 = this.count2 || 0;
-        this.count3 = this.count3 || 0;
-        this.count4 = this.count4 || 0;
-        this.count5 = this.count5 || 0;
-
+        this.acceptCount1 = this.acceptCount1 || 0;
+        this.acceptCount2 = this.acceptCount2 || 0;
+        this.acceptCount3 = this.acceptCount3 || 0;
+        this.acceptCount4 = this.acceptCount4 || 0;
+        this.acceptCount5 = this.acceptCount5 || 0;
+        this.rejectCount1 = this.rejectCount1 || 0;
+        this.rejectCount2 = this.rejectCount2 || 0;
+        this.rejectCount3 = this.rejectCount3 || 0;
+        this.rejectCount4 = this.rejectCount4 || 0;
+        this.rejectCount5 = this.rejectCount5 || 0;
         this.createChart();
       });
   }
@@ -115,35 +132,36 @@ export class CreateBarchartComponent {
       ],
       datasets: [
         {
-          label: 'Dailly Activity',
+          type: 'bar',
+          label: 'Accepted',
           data: [
-            this.count1,
-            this.count2,
-            this.count3,
-            this.count4,
-            this.count5,
+            this.acceptCount1,
+            this.acceptCount2,
+            this.acceptCount3,
+            this.acceptCount4,
+            this.acceptCount5,
           ],
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(255, 159, 64, 0.2)',
-            'rgba(153, 102, 255, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
+          backgroundColor: 'rgb(75,192,192)',
+          borderColor: 'rgb(255, 99, 132)',
+        },
+        {
+          label: 'Rejected',
+          data: [
+            this.rejectCount1,
+            this.rejectCount2,
+            this.rejectCount3,
+            this.rejectCount4,
+            this.rejectCount5,
           ],
-          borderColor: [
-            'rgb(255, 99, 132)',
-            'rgb(255, 159, 64)',
-            'rgb(153, 102, 255)',
-            'rgb(75, 192, 192)',
-            'rgb(54, 162, 235)',
-          ],
-          borderWidth: 1,
+          backgroundColor: 'rgb(255,99,132)',
+          borderColor: 'rgb(255, 159, 64)',
+          type: 'bar',
         },
       ],
     };
     const myChart = new Chart('barchart', {
-      type: 'bar',
-      data: data,
+      type: 'scatter',
+      data: data as any,
       options: {
         scales: {
           y: {
@@ -156,5 +174,6 @@ export class CreateBarchartComponent {
 }
 interface ResponseItem {
   date: string;
-  count: number;
+  disbursed_count: number;
+  rejected_count: number;
 }

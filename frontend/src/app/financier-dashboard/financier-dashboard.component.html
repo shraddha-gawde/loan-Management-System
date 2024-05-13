@@ -39,7 +39,8 @@
               showDashboard = true;
               showPrograms = false;
               addPrograms = false;
-              showinvoices = false
+              showinvoices = false;
+              genarateReport = false
             "
             class="nav-link cursor-pointer"
           >
@@ -48,11 +49,6 @@
           >
         </li>
   
-        <!-- Divider -->
-        <hr class="sidebar-divider" />
-  
-        <!-- Heading -->
-        <div class="sidebar-heading">Interface</div>
   
         <li class="nav-item" [ngClass]="{ active: showPrograms }">
           <a
@@ -65,7 +61,8 @@
               batchTable = true;
               showRejected = false;
               refreshData();
-              showSerchData = false
+              showSerchData = false;
+              genarateReport = false
             "
             class="nav-link cursor-pointer"
           >
@@ -85,7 +82,8 @@
               addPrograms = true;
               showinvoices = false;
               showRejected = false;
-              showInvoice()
+              showInvoice();
+              genarateReport = false
             "
             class="nav-link cursor-pointer"
           >
@@ -104,6 +102,7 @@
               showinvoices = false;
               showRejected = true;
               rejectedInvoice();
+              genarateReport = false;
 
             "
             class="nav-link cursor-pointer"
@@ -116,16 +115,7 @@
         <!-- Divider -->
         <hr class="sidebar-divider" />
   
-        <li class="nav-item">
-          <a class="nav-link" href="#">
-            <i class="fas fa-fw fa-chart-area"></i>
-            <span>Charts</span></a
-          >
-        </li>
-  
-        <!-- Divider -->
-        <hr class="sidebar-divider d-none d-md-block" />
-      </ul>
+        </ul>
       <!-- End of Sidebar -->
   
       <!-- Content Wrapper -->
@@ -225,9 +215,15 @@
               >
                 <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
                 <a
-                  href="#"
                   class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
-                  ><i class="fa fa-list-alt" aria-hidden="true"></i> Generate
+                  (click)="
+                  showDashboard = false;
+                  showPrograms = false;
+                  addPrograms = false;
+                  showinvoices = false;
+                  genarateReport = true
+                ">
+                <i class="fa fa-list-alt" aria-hidden="true"></i> Generate
                   Report</a
                 >
               </div>
@@ -330,7 +326,6 @@
                   </div>
                 </div>
   
-                <!-- Pending Requests Card Example -->
                 <div class="col-xl-3 col-md-6 mb-4">
                   <div class="card border-left-warning shadow h-100 py-2">
                     <div class="card-body">
@@ -373,7 +368,7 @@
                         Invoice Update Dailly Activity
                       </h6>
                     </div>
-                    <demo-create-barchart></demo-create-barchart>
+                    <demo-bar-chart-financier></demo-bar-chart-financier>
                   </div>
                 </div>
   
@@ -387,27 +382,274 @@
                         Invoice Update Status
                       </h6>
                     </div>
-                    <demo-create-piechart></demo-create-piechart>
+                    <demo-pie-chart-financier></demo-pie-chart-financier>
                   </div>
                 </div>
               </div>
             </div>
   
+
+            <div *ngIf="genarateReport">
+              <div class="container mt-5">
+                <h1>Generate Report</h1>
+                <div class="row mt-4">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="startDate">Start Date:</label>
+                      <input
+                        type="date"
+                        class="form-control"
+                        id="startDate"
+                        [(ngModel)]="startDate"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="endDate">End Date:</label>
+                      <input
+                        type="date"
+                        class="form-control"
+                        id="endDate"
+                        [(ngModel)]="endDate"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="reportType">Report Type:</label>
+                      <select
+                        class="form-control"
+                        id="reportType"
+                        [(ngModel)]="reportType"
+                      >
+                        <option value="summary">Summary Report</option>
+                        <option value="detailed">Detailed Report</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mt-3">
+                  <div class="col-md-6">
+                    <button
+                      class="btn btn-primary"
+                      (click)="generateAndDisplayReport()"
+                    >
+                      Generate Report
+                    </button>
+                    <button
+                      class="btn btn-secondary ml-2"
+                      (click)="exportReport('pdf')"
+                    >
+                      Export as PDF
+                    </button>
+                    <button
+                      class="btn btn-secondary ml-2"
+                      (click)="exportReport('csv')"
+                    >
+                      Export as CSV
+                    </button>
+                  </div>
+                </div>
+                <div class="row mt-4" >
+                  <div class="col-md-12">
+                   
+                      <div id="reportResult">
+                      
+                      <div *ngIf="reportData && reportType === 'summary'" >
+                        
+                        <div class="tableDiv" id="content" #content>
+                          <h2>summary report :</h2>
+                          <h4>User Details:</h4> 
+                          <p>user name: {{reportData.user.username}}</p>
+                          <p>Contact: {{reportData.user.phone}}</p>
+                          <p>email: {{reportData.user.email}}</p>
+                          <p>Company name: {{reportData.user.companyName}}</p>
+                          <table *ngIf="reportData">
+                            <thead>
+                              <tr>
+                                <th>#</th>
+                                <th>details</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                              <td>Total invoices:</td>
+                              <td>
+                                {{ reportData.totalInvoices }} Invoices
+                              </td>
+                            </tr>
+                              <tr>
+                                <td>Total accepted programs:</td>
+                                <td>{{ reportData.totalBatchCount }} Batches</td>
+                              </tr>
+                              <tr>
+                                <td>Total pending invoices:</td>
+                                <td>
+                                  {{ reportData.acceptedCount }} Invoices
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>Total disbursed invoices:</td>
+                                <td>
+                                  {{ reportData.disbursedCount }} Invoices
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>Total rejected invoices:</td>
+                                <td>
+                                  {{ reportData.rejectedCount }} Invoices
+                                </td>
+                              </tr>
+                              <tr>
+                                
+  
+                              <tr>
+                                <td>total Disbursed Amounts:</td>
+                                <td>
+                                  <i class="fa fa-inr" aria-hidden="true"></i>
+                                  {{ reportData.disbursedNotNullAmount }}
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>total pending Disbursed Amounts:</td>
+                                <td>
+                                  <i class="fa fa-inr" aria-hidden="true"></i>
+                                  {{ reportData.disbursedNullAmount }}
+                                </td>
+                              </tr>
+                              
+                            </tbody>
+                          </table>
+                        </div>
+  
+                        
+                      </div>
+                      <div *ngIf="reportData && reportType === 'detailed'">
+                        
+                        <div class="tableDiv" id="detailedcontent" #detailedcontent>
+                          <h2>Detailed report :</h2>
+                          <h4>User Details:</h4> 
+                            <p>user name: {{reportData.user.username}}</p>
+                            <p>Contact: {{reportData.user.phone}}</p>
+                            <p>email: {{reportData.user.email}}</p>
+                            <p>Company name: {{reportData.user.companyName}}</p>
+                              
+                          <h2>Disbursed Invoices :</h2>
+                            <table *ngIf="reportData.disbursedInvoices && reportData.disbursedInvoices.length > 0" style="margin-bottom: 25px;">
+                                <!-- Table header -->
+                                <thead>
+                                    <tr>
+                                        <th>Invoice Number</th>
+                                        <th>Invoice Amount</th>
+                                        <th>Batch ID</th>
+                                        <th>created By</th>
+                                        <th>accepted By</th>
+                                    </tr>
+                                </thead>
+                                <!-- Table body -->
+                                <tbody>
+                                    <!-- Table rows -->
+                                    <tr *ngFor="let invoice of reportData.disbursedInvoices">
+                                        <td>{{ invoice.invoice_number }}</td>
+                                        <td>{{ invoice.total_amount_due }}</td>
+                                        <td>{{ invoice.Batch_ID.BatchID }}</td>
+                                        <td>{{ invoice.createdByInvoice.username }}</td>
+                                        <td>{{ invoice.acceptedByInvoice.username }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <h2>Accepted Invoices: </h2>
+                            <table *ngIf="reportData.acceptedInvoices && reportData.acceptedInvoices.length > 0" style="margin-bottom: 25px;">
+                                <!-- Table header -->
+                                <thead>
+                                    <tr>
+                                        <th>Invoice Number</th>
+                                        <th>Invoice Amount</th>
+                                        <th>Batch ID</th>
+                                        <th>Created By</th>
+                                        <th>accepted By</th>
+                                    </tr>
+                                </thead>
+                                <!-- Table body -->
+                                <tbody>
+                                    <!-- Table rows -->
+                                    <tr *ngFor="let invoice of reportData.acceptedInvoices">
+                                        <td>{{ invoice.invoice_number }}</td>
+                                        <td>{{ invoice.total_amount_due }}</td>
+                                        <td>{{ invoice.Batch_ID.BatchID }}</td>
+                                        <td>{{ invoice.createdByInvoice.username }}</td>
+                                        <td>{{ invoice.acceptedByInvoice.username }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <h2>Rejected Invoices: </h2>
+                            <table *ngIf="reportData.rejectedInvoices && reportData.rejectedInvoices.length > 0" style="margin-bottom: 25px;">
+                                <!-- Table header -->
+                                <thead>
+                                    <tr>
+                                        <th>Invoice Number</th>
+                                        <th>Invoice Amount</th>
+                                        <th>Batch ID</th>
+                                        <th>Created By</th>
+                                        <th>Accepted By</th>
+                                    </tr>
+                                </thead>
+                                <!-- Table body -->
+                                <tbody>
+                                    <!-- Table rows -->
+                                    <tr *ngFor="let invoice of reportData.rejectedInvoices">
+                                        <td>{{ invoice.invoice_number }}</td>
+                                        <td>{{ invoice.total_amount_due }}</td>
+                                        <td>{{ invoice.Batch_ID.BatchID }}</td>
+                                        <td>{{ invoice.createdByInvoice.username }}</td>
+                                        <td>{{ invoice.acceptedByInvoice.username }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <h2>Accepted whole Batches</h2>
+                            <table *ngIf="reportData.batches && reportData.batches.length > 0" style="margin-bottom: 25px;">
+                                <!-- Table header -->
+                                <thead>
+                                    <tr>
+                                        <th>Batch ID</th>
+                                        <th>Program Type</th>
+                                        <th>Region</th>
+                                        <th>Status</th>
+                                        <th>Created By</th>
+                                        <th>Accepted By</th>
+                                        <th>Disbursed By</th>
+                                    </tr>
+                                </thead>
+                                <!-- Table body -->
+                                <tbody>
+                                    <tr *ngFor="let batch of reportData.batches">
+                                        <td>{{ batch.BatchID }}</td>
+                                        <td>{{ batch.programType }}</td>
+                                        <td>{{ batch.region }}</td>
+                                        <td>{{ batch.status }}</td>
+                                        <td>{{ batch.createdBy ? batch.createdBy.username : null }}</td>
+                                        <td>{{ batch.acceptedBy ? batch.acceptedBy.username : null }}</td>
+                                        <td>{{ batch.disbursedBy ? batch.disbursedBy.username : null }}</td>
+                                        <!-- <td>{{ batch.rejectedBy ? batch.rejectedBy.username : null}}</td> -->
+                                    </tr>
+                                </tbody>
+                            </table>
+                      </div>
+                    </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
   
             <div *ngIf="addPrograms">
               <div >
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                  <button
-                    class="btn btn-primary"
-                    (click)="
-                      showPrograms = true;
-                      showinvoices = false;
-                      showDashboard = false;
-                      addPrograms = false
-                    "
-                  >
-                    <i class="fa fa-undo" aria-hidden="true"></i> go back
-                  </button>
+                  
                 </div>
     
   
@@ -1320,17 +1562,7 @@
             <div *ngIf="showRejected">
               <div >
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                  <button
-                    class="btn btn-primary"
-                    (click)="
-                      showPrograms = true;
-                      showinvoices = false;
-                      showDashboard = false;
-                      addPrograms = false
-                    "
-                  >
-                    <i class="fa fa-undo" aria-hidden="true"></i> go back
-                  </button>
+                  
                 </div>
     
   

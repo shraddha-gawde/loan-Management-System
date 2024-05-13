@@ -9,9 +9,12 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../auth.service';
-import { FormsModule, NgForm, ReactiveFormsModule } from '@angular/forms';
-import { CreatePiechartComponent } from '../create-piechart/create-piechart.component';
-import { CreateBarchartComponent } from '../create-barchart/create-barchart.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BarChartFinancierComponent } from '../bar-chart-financier/bar-chart-financier.component';
+import { PieChartFinancierComponent } from '../pie-chart-financier/pie-chart-financier.component';
+import * as FileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
 
 @Component({
   selector: 'demo-financier-dashboard',
@@ -22,13 +25,14 @@ import { CreateBarchartComponent } from '../create-barchart/create-barchart.comp
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    CreatePiechartComponent,
-    CreateBarchartComponent
+    BarChartFinancierComponent,
+    PieChartFinancierComponent
   ],
   templateUrl: './financier-dashboard.component.html',
   styleUrl: './financier-dashboard.component.css'
 })
 export class FinancierDashboardComponent implements OnInit {
+  genarateReport = false;
   username: any;
   showDashboard = true;
   showAdministrators = false;
@@ -517,6 +521,111 @@ generalData(){
 
   trackByFn(index: number, item: any): any {
     return item.id;
+  }
+
+
+  startDate: string = '';
+  endDate: string = '';
+  reportType: string = 'summary';
+  reportData: any;
+
+
+  generateAndDisplayReport(): void {
+    const requestBody = {
+      startDate: this.startDate,
+      endDate: this.endDate,
+      reportType: this.reportType,
+    };
+
+    this.httpClient
+      .post<any>(`${this.baseURL}reportFinance`, requestBody, {
+        headers: this.authService.getTokenHeaders(),
+      })
+      .subscribe(
+        (response) => {
+          this.reportData = response;
+          console.log(this.reportData);
+        },
+        (error) => {
+          console.error('Error generating report:', error);
+        }
+      );
+  }
+  @ViewChild('content', { static: false }) el!: ElementRef;
+  @ViewChild('detailedcontent', { static: false }) detailed!: ElementRef;
+  
+  
+  exportReport(format: string): void {
+    if (format === 'pdf') {
+      if (this.reportType === 'summary') {
+        const pdf = new jsPDF('p', 'pt', 'a4', true);
+        console.log(this.el);
+        pdf.html(this.el.nativeElement, {
+          width: 200,
+          callback: (pdf) => {
+            const pdfFile = pdf.output('blob');
+            FileSaver.saveAs(pdfFile, 'Summary_report.pdf');
+          },
+        });
+      } else if (this.reportType === 'detailed') {
+        const pdf = new jsPDF('l', 'pt', 'a4', true);
+        console.log(this.detailed);
+        pdf.html(this.detailed.nativeElement, {
+          width: 200,
+          callback: (pdf) => {
+            const pdfFile = pdf.output('blob');
+            FileSaver.saveAs(pdfFile, 'Detailed_report.pdf');
+          },
+        });
+      }
+    }else if (format === 'csv') {
+      const reportResult = document.getElementById('reportResult');
+      if (reportResult) {
+        const tables = Array.from(reportResult.querySelectorAll('table'));
+        if (tables.length > 0) {
+          const wb = XLSX.utils.book_new();
+    
+          tables.forEach((table, index) => {
+            const rows = Array.from(table.querySelectorAll('tr'));
+            const csvContent = rows.map((row) => {
+              const rowData = Array.from(row.querySelectorAll('td, th'))
+                .map((cell) => cell.textContent)
+                .join(',');
+              return rowData;
+            }).join('\n');
+    
+            const ws = XLSX.utils.aoa_to_sheet(csvContent.split('\n').map(row => row.split(',')));
+            XLSX.utils.book_append_sheet(wb, ws, ['Disbursed', 'Pending', 'Rejected', 'accepted batches'][index]);
+          });
+    
+          const sheet = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
+          const blob = new Blob([convert(sheet)], { type: 'application/octet-stream' });
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'report.xlsx';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(url);
+        } else {
+          console.error('Table elements not found in report result.');
+        }
+      } else {
+        console.error('Report result element not found.');
+      }
+    } else {
+      console.error('Invalid format specified.');
+    }
+    
+    function convert(s: string) {
+      const buf = new ArrayBuffer(s.length);
+      const view = new Uint8Array(buf);
+      for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+      return buf;
+    }
+    
+    
   }
 }
 

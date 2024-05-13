@@ -15,8 +15,8 @@ const { access } = require("../middlewares/acess.middleware");
 const {  getInvoices, uploadInvoiceBatch, getinvoiceByID, downloadExcel,  getInvoiceBatch, getInvoiceBatchByUser, acceptInvoiceBySeller, getInvoicesAcceptedBySeller, rejectInvoiceBySeller } = require("../controller/dashboard.controller");
 const upload = require("../middlewares/multer.middleware");
 const { disburseInvoiceByFinancier, getAllInvoicesAcceptedBySellers, getAllInvoicesrejected } = require("../controller/finacier.controller");
-const { getInvoicesByStatus, getCountByDate, countbatches, totalBatches, disburseAmounts, disburseAmountsSeller, totalinvoicesAccepted, disburseAmountsFinancier, getInvoicesByStatusSeller } = require("../controller/charts.controller");
-const { report, reportSeller } = require("../controller/report.controller");
+const { getInvoicesByStatus, getCountByDate, countbatches, totalBatches, disburseAmounts, disburseAmountsSeller, totalinvoicesAccepted, disburseAmountsFinancier, getInvoicesByStatusSeller, getCountByDateFinancier, getInvoicesByStatusFinance } = require("../controller/charts.controller");
+const { report, reportSeller, reportFinancier } = require("../controller/report.controller");
 
 router.use(express.json())
 
@@ -52,6 +52,8 @@ router.get('/allBatches', access(['chartData']), totalBatches)
 router.get('/amount', access(['chartData']), disburseAmountsSeller)
 router.get('/countInvoices', access(['chartData']), totalinvoicesAccepted)
 router.get('/amountFinance', access(['chartData']), disburseAmountsFinancier)
+router.get('/dateCountFinince', access(['chartData']), getCountByDateFinancier)
+router.get('/statusFinance', access(['chartData']), getInvoicesByStatusFinance)
 
 // seller routes 
 router.get("/invoices", access(['getInvoicesAcceptedBySeller']), getInvoicesAcceptedBySeller)
@@ -69,7 +71,7 @@ router.get("/rejected", access(["disburseInvoiceByFinancier"]), getAllInvoicesre
 router.post('/report', access(['chartData']), report)
 router.get('/seller', access(['chartData']), getInvoicesByStatusSeller)
 router.post('/reportSeller', access(['chartData']), reportSeller)
-
+router.post('/reportFinance', access(['chartData']), reportFinancier)
 module.exports = {
   router,
 };

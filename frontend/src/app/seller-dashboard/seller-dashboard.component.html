@@ -656,17 +656,7 @@
           <div *ngIf="addPrograms">
             <div >
               <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                <button
-                  class="btn btn-primary"
-                  (click)="
-                    showPrograms = true;
-                    showinvoices = false;
-                    showDashboard = false;
-                    addPrograms = false
-                  "
-                >
-                  <i class="fa fa-undo" aria-hidden="true"></i> go back
-                </button>
+               
               </div>
   
 
@@ -798,9 +788,10 @@
                           aria-hidden="true"
                         ></i>
                       </th>
-                      <th>created By</th>
+                      
                         <th>Accepted By</th>
                         <th>disbursed by</th>
+                        <th>Rejected By</th>
                       <th>action</th>
                     </tr>
                   </thead>
@@ -835,13 +826,6 @@
                         </td>
                         <td>
                           {{
-                            invoice.createdByInvoice
-                              ? invoice.createdByInvoice.username
-                              : null
-                          }}
-                        </td>
-                        <td>
-                          {{
                             invoice.acceptedByInvoice
                               ? invoice.acceptedByInvoice.username
                               : null
@@ -851,6 +835,13 @@
                           {{
                             invoice.disbursedByInvoice
                               ? invoice.disbursedByInvoice.username
+                              : null
+                          }}
+                        </td>
+                        <td>
+                          {{
+                            invoice.rejectedByInvoice
+                              ? invoice.rejectedByInvoice.username
                               : null
                           }}
                         </td>
@@ -1357,9 +1348,10 @@
                         aria-hidden="true"
                       ></i>
                     </th>
-                    <th>created By</th>
+                    
                         <th>Accepted By</th>
                         <th>disbursed by</th>
+                        <th>Rejected By</th>
                     <th>action</th>
                   </tr>
                 </thead>
@@ -1392,13 +1384,7 @@
                           {{ invoice.status }}
                         </button>
                       </td>
-                      <td>
-                        {{
-                          invoice.createdByInvoice
-                            ? invoice.createdByInvoice.username
-                            : null
-                        }}
-                      </td>
+                     
                       <td>
                         {{
                           invoice.acceptedByInvoice
@@ -1410,6 +1396,13 @@
                         {{
                           invoice.disbursedByInvoice
                             ? invoice.disbursedByInvoice.username
+                            : null
+                        }}
+                      </td>
+                      <td>
+                        {{
+                          invoice.rejectedByInvoice
+                            ? invoice.rejectedByInvoice.username
                             : null
                         }}
                       </td>
