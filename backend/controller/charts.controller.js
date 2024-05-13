@@ -31,7 +31,7 @@ const getInvoicesByStatus = async (req, res) => {
         ],
         where: { created_by: userID },
         order: [[Sequelize.literal('DATE(created_at)'), 'DESC']], // Order by truncated date
-        // limit: 5,
+        limit: 5,
         raw: true,
         group: [Sequelize.fn('DATE', Sequelize.col('created_at'))] // Group by truncated date
       });
@@ -191,6 +191,63 @@ const disburseAmountsFinancier = async (req, res) => {
   }
 };
 
+const getInvoicesByStatusSeller = async (req, res) => {
+  try {
+    const userID = req.userID;
+
+    // Find counts of invoices by status
+    const invoiceCounts = await invoiceModel.findAll({
+      attributes: [
+        'status',
+        [Sequelize.fn('COUNT', 'status'), 'count']
+      ],
+      where: {
+        [Op.or]: [
+          { accepted_by: userID },
+          { rejected_by: userID }
+        ]
+      },
+      group: ['status']
+    });
+
+    const totalInvoices = await invoiceModel.count();
+    let acceptedCount = 0;
+    let rejectedCount = 0;
+    let disbursedCount = 0;
+
+    // Calculate total invoices and counts by status
+    invoiceCounts.forEach(invoice => {
+      // totalInvoices += invoice.get('count');
+      if (invoice.status === 'accepted') {
+        count = invoice.get('count');
+        acceptedCount = count + disbursedCount
+      } else if (invoice.status === 'rejected') {
+        rejectedCount = invoice.get('count');
+      } else if (invoice.status === 'disbursed') {
+        disbursedCount = invoice.get('count');
+      }
+    });
+
+    const acceptedPercentage = (acceptedCount / totalInvoices) * 100;
+    const rejectedPercentage = (rejectedCount / totalInvoices) * 100;
+    const disbursedPercentage = (disbursedCount / totalInvoices) * 100;
+
+    res.status(200).json({
+      data: {
+        acceptedCount,
+        rejectedCount,
+        disbursedCount,
+        totalInvoices,
+        acceptedPercentage,
+        rejectedPercentage,
+        disbursedPercentage
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error", error: error });
+  }
+};
 
   module.exports = {
     getInvoicesByStatus,
@@ -200,5 +257,6 @@ const disburseAmountsFinancier = async (req, res) => {
     totalBatches,
     disburseAmountsSeller,
     totalinvoicesAccepted,
-    disburseAmountsFinancier
+    disburseAmountsFinancier,
+    getInvoicesByStatusSeller
   }

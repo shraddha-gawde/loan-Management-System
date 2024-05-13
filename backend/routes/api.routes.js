@@ -14,9 +14,9 @@ const { auth } = require("../middlewares/auth.middleware");
 const { access } = require("../middlewares/acess.middleware");
 const {  getInvoices, uploadInvoiceBatch, getinvoiceByID, downloadExcel,  getInvoiceBatch, getInvoiceBatchByUser, acceptInvoiceBySeller, getInvoicesAcceptedBySeller, rejectInvoiceBySeller } = require("../controller/dashboard.controller");
 const upload = require("../middlewares/multer.middleware");
-const { disburseInvoiceByFinancier, getAllInvoicesAcceptedBySellers } = require("../controller/finacier.controller");
-const { getInvoicesByStatus, getCountByDate, getTotalEarningsMonthly, getTotalEarningsYearly, countbatches, totalBatches, disburseAmounts, disburseAmountsSeller, totalinvoicesAccepted, disburseAmountsFinancier } = require("../controller/charts.controller");
-const { report, exportExcel, exportPdf } = require("../controller/report.controller");
+const { disburseInvoiceByFinancier, getAllInvoicesAcceptedBySellers, getAllInvoicesrejected } = require("../controller/finacier.controller");
+const { getInvoicesByStatus, getCountByDate, countbatches, totalBatches, disburseAmounts, disburseAmountsSeller, totalinvoicesAccepted, disburseAmountsFinancier, getInvoicesByStatusSeller } = require("../controller/charts.controller");
+const { report, reportSeller } = require("../controller/report.controller");
 
 router.use(express.json())
 
@@ -64,12 +64,11 @@ router.patch("/disburse/:id", access(["disburseInvoiceByFinancier"]), disburseIn
 
 // financier routes
 router.get("/allInvoices", access(["disburseInvoiceByFinancier"]), getAllInvoicesAcceptedBySellers)
-
+router.get("/rejected", access(["disburseInvoiceByFinancier"]), getAllInvoicesrejected)
 
 router.post('/report', access(['chartData']), report)
-router.post('/exportexel', access(['chartData']), exportExcel)
-router.post('/exportpdf', access(['chartData']), exportPdf)
-
+router.get('/seller', access(['chartData']), getInvoicesByStatusSeller)
+router.post('/reportSeller', access(['chartData']), reportSeller)
 
 module.exports = {
   router,

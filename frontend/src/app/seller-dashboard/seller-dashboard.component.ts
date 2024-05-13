@@ -9,9 +9,11 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../auth.service';
-import { FormsModule, NgForm, ReactiveFormsModule } from '@angular/forms';
-import { CreateBarchartComponent } from '../create-barchart/create-barchart.component';
-import { CreatePiechartComponent } from '../create-piechart/create-piechart.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { PieChartSellerComponent } from '../pie-chart-seller/pie-chart-seller.component';
+import * as FileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
 
 @Component({
   selector: 'demo-seller-dashboard',
@@ -22,13 +24,13 @@ import { CreatePiechartComponent } from '../create-piechart/create-piechart.comp
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    CreateBarchartComponent,
-    CreatePiechartComponent
+    PieChartSellerComponent
   ],
   templateUrl: './seller-dashboard.component.html',
   styleUrl: './seller-dashboard.component.css',
 })
 export class SellerDashboardComponent implements OnInit {
+  genarateReport = false;
   username: any;
   showDashboard = true;
   showAdministrators = false;
@@ -42,11 +44,10 @@ export class SellerDashboardComponent implements OnInit {
   uploadStatus: string = '';
   uploadBOX = false;
   roleID: any;
-pending= 0;
-disbursedNullAmount = 0
-disbursedNotNullAmount = 0 ;
-totalBatches = 0
-
+  pending = 0;
+  disbursedNullAmount = 0;
+  disbursedNotNullAmount = 0;
+  totalBatches = 0;
 
   constructor(private authService: AuthService) {}
   httpClient = inject(HttpClient);
@@ -57,19 +58,30 @@ totalBatches = 0
     this.username = userData ? JSON.parse(userData) : null;
     console.log(this.username);
     this.refreshData();
-    this.generalData()
+    this.generalData();
   }
-
-generalData(){
-  this.httpClient
+information: any
+  generalData() {
+    this.httpClient
       .get<any>(`${this.baseURL}allBatches`, {
         headers: this.authService.getTokenHeaders(),
       })
       .subscribe((Response) => {
         this.totalBatches = Response.totalBatchCount;
-      })
+      });
 
       this.httpClient
+      .get<any>(`${this.baseURL}seller`, {
+        headers: this.authService.getTokenHeaders(),
+      })
+      .subscribe((Response) => {
+        this.information = Response.data;
+        console.log(this.information);
+      });
+
+
+
+    this.httpClient
       .get<any>(`${this.baseURL}amount`, {
         headers: this.authService.getTokenHeaders(),
       })
@@ -77,18 +89,16 @@ generalData(){
         console.log(Response);
         this.disbursedNullAmount = Response.disbursedNullAmount;
         this.disbursedNotNullAmount = Response.disbursedNotNullAmount;
-        this.pending = Response.disbursedNullCount
-        console.log(this.disbursedNullAmount) 
-        console.log(this.disbursedNotNullAmount)
-      })
-
-}
+        this.pending = Response.disbursedNullCount;
+        console.log(this.disbursedNullAmount);
+        console.log(this.disbursedNotNullAmount);
+      });
 
 
+  }
 
   batchObj: batchData = new batchData();
   batchList: batchData[] = [];
-
 
   currentPage = 1;
   limit = 10;
@@ -112,10 +122,11 @@ generalData(){
       this.sortBy = column;
       this.sortDirection = 'asc';
     }
-    if(this.showPrograms === true){
+    if (this.showPrograms === true) {
       this.refreshData();
-    }if(this.addPrograms === true){
-       this.showInvoice()
+    }
+    if (this.addPrograms === true) {
+      this.showInvoice();
     }
   }
 
@@ -334,7 +345,7 @@ generalData(){
               ...invoice,
               invoice_date: formattedInvoiceDate,
               due_date: formattedDueDate,
-              index: index, 
+              index: index,
             };
           });
           this.pagination = response.pagination;
@@ -379,9 +390,9 @@ generalData(){
   openModelReject(index: number) {
     if (index !== undefined && index >= 0 && index < this.invoices.length) {
       const model = document.getElementById('myModalReject');
-      
+
       if (model != null) {
-         const invoice = this.invoices[index];
+        const invoice = this.invoices[index];
         this.selectedInvoiceId = invoice.id;
         console.log(this.selectedInvoiceId);
         console.log(invoice);
@@ -395,10 +406,9 @@ generalData(){
   closeModelReject() {
     if (this.model2) {
       this.model2.nativeElement.style.display = 'none';
-      this.getInvoiceData(this.parameterBatchID)
+      this.getInvoiceData(this.parameterBatchID);
     }
   }
-  
 
   openModelaccept(index: number) {
     if (index !== undefined && index >= 0 && index < this.invoices.length) {
@@ -418,7 +428,7 @@ generalData(){
   closeModelAccept() {
     if (this.model1) {
       this.model1.nativeElement.style.display = 'none';
-      this.getInvoiceData(this.parameterBatchID)
+      this.getInvoiceData(this.parameterBatchID);
     }
   }
 
@@ -472,7 +482,6 @@ generalData(){
       );
   }
 
-
   sortInvoices(column: string) {
     if (this.sortBy === column) {
       this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
@@ -486,6 +495,109 @@ generalData(){
 
   trackByFn(index: number, item: any): any {
     return item.id;
+  }
+
+
+  startDate: string = '';
+  endDate: string = '';
+  reportType: string = 'summary';
+  reportData: any;
+  generateAndDisplayReport(): void {
+    const requestBody = {
+      startDate: this.startDate,
+      endDate: this.endDate,
+      reportType: this.reportType,
+    };
+
+    this.httpClient
+      .post<any>(`${this.baseURL}reportSeller`, requestBody, {
+        headers: this.authService.getTokenHeaders(),
+      })
+      .subscribe(
+        (response) => {
+          this.reportData = response;
+          console.log(this.reportData);
+        },
+        (error) => {
+          console.error('Error generating report:', error);
+        }
+      );
+  }
+  @ViewChild('content', { static: false }) el!: ElementRef;
+  @ViewChild('detailedcontent', { static: false }) detailed!: ElementRef;
+  
+  
+  exportReport(format: string): void {
+    if (format === 'pdf') {
+      if (this.reportType === 'summary') {
+        const pdf = new jsPDF('p', 'pt', 'a4', true);
+        console.log(this.el);
+        pdf.html(this.el.nativeElement, {
+          width: 200,
+          callback: (pdf) => {
+            const pdfFile = pdf.output('blob');
+            FileSaver.saveAs(pdfFile, 'Summary_report.pdf');
+          },
+        });
+      } else if (this.reportType === 'detailed') {
+        const pdf = new jsPDF('l', 'pt', 'a4', true);
+        console.log(this.detailed);
+        pdf.html(this.detailed.nativeElement, {
+          width: 200,
+          callback: (pdf) => {
+            const pdfFile = pdf.output('blob');
+            FileSaver.saveAs(pdfFile, 'Detailed_report.pdf');
+          },
+        });
+      }
+    }else if (format === 'csv') {
+      const reportResult = document.getElementById('reportResult');
+      if (reportResult) {
+        const tables = Array.from(reportResult.querySelectorAll('table'));
+        if (tables.length > 0) {
+          const wb = XLSX.utils.book_new();
+    
+          tables.forEach((table, index) => {
+            const rows = Array.from(table.querySelectorAll('tr'));
+            const csvContent = rows.map((row) => {
+              const rowData = Array.from(row.querySelectorAll('td, th'))
+                .map((cell) => cell.textContent)
+                .join(',');
+              return rowData;
+            }).join('\n');
+    
+            const ws = XLSX.utils.aoa_to_sheet(csvContent.split('\n').map(row => row.split(',')));
+            XLSX.utils.book_append_sheet(wb, ws, ['Accepted', 'Rejected', 'Disbursed', 'All batches'][index]);
+          });
+    
+          const sheet = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
+          const blob = new Blob([convert(sheet)], { type: 'application/octet-stream' });
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'report.xlsx';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(url);
+        } else {
+          console.error('Table elements not found in report result.');
+        }
+      } else {
+        console.error('Report result element not found.');
+      }
+    } else {
+      console.error('Invalid format specified.');
+    }
+    
+    function convert(s: string) {
+      const buf = new ArrayBuffer(s.length);
+      const view = new Uint8Array(buf);
+      for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+      return buf;
+    }
+    
+    
   }
 }
 

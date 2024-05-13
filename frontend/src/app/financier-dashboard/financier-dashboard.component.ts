@@ -39,13 +39,14 @@ export class FinancierDashboardComponent implements OnInit {
   programs = false;
   showSerchData = false;
   showInvoieData = false;
+  showRejected = false;
   uploadStatus: string = '';
   uploadBOX = false;
   roleID: any;
   pending= 0;
-disbursedNullAmount = 0
-disbursedNotNullAmount = 0 ;
-totalBatches = 0
+  disbursedNullAmount = 0
+  disbursedNotNullAmount = 0 ;
+  totalBatches = 0
 
 
 
@@ -172,7 +173,7 @@ generalData(){
   showInvoice() {
     // this.parameterBatchID = batchid;
     // console.log(this.parameterBatchID);
-    const url = `${this.baseURL}allInvoices?page=${this.currentPage}&limit=${this.limit}&invoice_number=${this.invoice_number}&status=${this.status}&customer_name=${this.customer_name}&sortBy=${this.sortBy}&sortOrder=${this.sortOrder}`;
+    const url = `${this.baseURL}allInvoices?page=${this.currentPage}&limit=${this.limit}&invoice_number=${this.invoice_number}&customer_name=${this.customer_name}&sortBy=${this.sortBy}&sortOrder=${this.sortOrder}`;
 
     this.httpClient
       .get<any>(url, {
@@ -385,7 +386,6 @@ generalData(){
       const model = document.getElementById('myModalReject');
       
       if (model != null) {
-        // const display = document.getElementsByClassName(".modal-dialog-centered")
         const invoice = this.invoices[index];
         this.selectedInvoiceId = invoice.id;
         console.log(this.selectedInvoiceId);
@@ -467,7 +467,7 @@ generalData(){
           console.log(response);
           this.acceptedStatus[id] = true;
           this.closeModelReject();
-          // this.refreshData();
+          this.showInvoice();
         },
         (error) => {
           console.log(id);
@@ -478,7 +478,32 @@ generalData(){
       );
   }
 
+  rejectedInvoice(){
+    const url = `${this.baseURL}rejected?page=${this.currentPage}&limit=${this.limit}&invoice_number=${this.invoice_number}&customer_name=${this.customer_name}&sortBy=${this.sortBy}&sortOrder=${this.sortOrder}`;
 
+    this.httpClient
+      .get<any>(url, {
+        headers: this.authService.getTokenHeaders(),
+      })
+      .subscribe(
+        (response) => {
+          console.log(Headers);
+          this.invoices.forEach((invoice) => {
+            this.acceptedStatus[invoice.id] = invoice.status === 'accepted';
+          });
+          this.invoices = response.data;
+          this.pagination = response.paginations;
+          // this.BatchID = response.BatchID;
+          console.log(this.invoices);
+          this.calculateRange();
+          console.log(this.pagination);
+        },
+        (error) => {
+          console.error('Error:', error);
+          this.errorMessage = 'Internal Server Error';
+        }
+      );
+  }
   sortInvoices(column: string) {
     if (this.sortBy === column) {
       this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
@@ -487,7 +512,7 @@ generalData(){
       this.sortBy = column;
       this.sortDirection = 'asc';
     }
-    this.getInvoiceData(this.parameterBatchID);
+    this.showInvoice();
   }
 
   trackByFn(index: number, item: any): any {

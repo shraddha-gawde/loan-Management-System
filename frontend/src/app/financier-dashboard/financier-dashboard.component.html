@@ -63,6 +63,7 @@
               addPrograms = false;
               showinvoices = false;
               batchTable = true;
+              showRejected = false;
               refreshData();
               showSerchData = false
             "
@@ -83,12 +84,32 @@
               showPrograms = false;
               addPrograms = true;
               showinvoices = false;
+              showRejected = false;
               showInvoice()
             "
             class="nav-link cursor-pointer"
           >
           <i class="fa fa-check-square-o" aria-hidden="true"></i>
             <span>accepted invoices</span>
+          </a>
+        </li>
+
+        <li class="nav-item" [ngClass]="{ active: showRejected }">
+          <a
+            class="nav-link"
+            (click)="
+              showDashboard = false;
+              showPrograms = false;
+              addPrograms = false;
+              showinvoices = false;
+              showRejected = true;
+              rejectedInvoice();
+
+            "
+            class="nav-link cursor-pointer"
+          >
+          <i class="fa fa-times" aria-hidden="true"></i>
+            <span>Rejected invoices</span>
           </a>
         </li>
   
@@ -950,6 +971,7 @@
                 </div>
               </div>
             </div>
+
             <div *ngIf="showinvoices">
               <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                 <button
@@ -1293,6 +1315,342 @@
               </div>
 
 
+            </div>
+
+            <div *ngIf="showRejected">
+              <div >
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                  <button
+                    class="btn btn-primary"
+                    (click)="
+                      showPrograms = true;
+                      showinvoices = false;
+                      showDashboard = false;
+                      addPrograms = false
+                    "
+                  >
+                    <i class="fa fa-undo" aria-hidden="true"></i> go back
+                  </button>
+                </div>
+    
+  
+                <div class="serchMain">
+                  <div class="search-box">
+                    <div class="form-group1" id="limit">
+                      <label for="limit">select limit: </label>
+                      <select
+                        id="status"
+                        [(ngModel)]="limit"
+                        class="form-control"
+                        (click)="getInvoiceData(parameterBatchID)"
+                      >
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="BatchID">Invoice Number:</label>
+                      <input
+                        type="text"
+                        id="invoice_number"
+                        [(ngModel)]="invoice_number"
+                        class="form-control"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="BatchID">Customer Name:</label>
+                      <input
+                        type="text"
+                        id="customer_name"
+                        [(ngModel)]="customer_name"
+                        class="form-control"
+                      />
+                    </div>
+                    
+                    <div class="form-group">
+                      <button
+                        class="btn btn-primary"
+                        type="button"
+                        (click)="showInvoice()"
+                      >
+                        <i class="fa fa-search"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+  
+  
+                <div id="tableDiv">
+                  <table>
+                    <thead>
+                      <tr>
+                        <td></td>
+                        <th>ID</th>
+                        <th (click)="sortInvoices('invoice_number')">
+                          Invoice Number
+                          <i
+                            class="fa fa-sort-alpha-{{
+                              sortBy === 'invoice_number' ? sortDirection : 'asc'
+                            }}"
+                            aria-hidden="true"
+                          ></i>
+                        </th>
+                        <th>batch_ID</th>
+                        <!-- <th></th> -->
+                        <th (click)="sortInvoices('invoice_date')">
+                          invoice Date
+                          <i
+                            class="fa fa-sort-alpha-{{
+                              sortBy === 'invoice_date' ? sortDirection : 'asc'
+                            }}"
+                            aria-hidden="true"
+                          ></i>
+                        </th>
+                        <th (click)="sortInvoices('due_date')">
+                          due Date
+                          <i
+                            class="fa fa-sort-alpha-{{
+                              sortBy === 'due_date' ? sortDirection : 'asc'
+                            }}"
+                            aria-hidden="true"
+                          ></i>
+                        </th>
+                        <th (click)="sortInvoices('description')">
+                          Description
+                          <i
+                            class="fa fa-sort-alpha-{{
+                              sortBy === 'description' ? sortDirection : 'asc'
+                            }}"
+                            aria-hidden="true"
+                          ></i>
+                        </th>
+                        <th (click)="sortInvoices('total_amount_due')">
+                          Invoice amount
+                          <i
+                            class="fa fa-sort-alpha-{{
+                              sortBy === 'total_amount_due' ? sortDirection : 'asc'
+                            }}"
+                            aria-hidden="true"
+                          ></i>
+                        </th>
+                        <th (click)="sortInvoices('unit_price')">
+                          Unit Price
+                          <i
+                            class="fa fa-sort-alpha-{{
+                              sortBy === 'unit_price' ? sortDirection : 'asc'
+                            }}"
+                            aria-hidden="true"
+                          ></i>
+                        </th>
+                        <th (click)="sortInvoices('status')">
+                          Status
+                          <i
+                            class="fa fa-sort-alpha-{{
+                              sortBy === 'status' ? sortDirection : 'asc'
+                            }}"
+                            aria-hidden="true"
+                          ></i>
+                        </th>
+                        <th>created By</th>
+                        <th>Accepted By</th>
+                        
+                        <th>action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <ng-container
+                        *ngFor="
+                          let invoice of invoices;
+                          let i = index;
+                          trackBy: invoice.id
+                        "
+                      >
+                        <tr>
+                          <td id="plus">
+                            <i
+                              class="fa fa-plus"
+                              aria-hidden="true"
+                              (click)="toggleInvoiceDetails(i, invoice.id)"
+                            ></i>
+                          </td>
+                          <td>{{ invoice.id }}</td>
+                          <td>{{ invoice.invoice_number }}</td>
+                          <td>{{ invoice.Batch_ID.BatchID }}</td>
+                          <td>{{ invoice.invoice_date }}</td>
+                          <td>{{ invoice.due_date }}</td>
+                          <td>{{ invoice.description }}</td>
+                          <td>{{ invoice.total_amount_due }}</td>
+                          <td>{{ invoice.unit_price }}</td>
+                          <td>
+                            <button [ngClass]="getStatusClass(invoice.status)">
+                              {{ invoice.status }}
+                            </button>
+                          </td>
+                          <td>
+                            {{
+                              invoice.createdByInvoice
+                                ? invoice.createdByInvoice.username
+                                : null
+                            }}
+                          </td>
+                          <td>
+                            {{
+                              invoice.acceptedByInvoice
+                                ? invoice.acceptedByInvoice.username
+                                : null
+                            }}
+                          </td>
+                          
+                          <td>
+                            <button
+                            *ngIf="invoice.status !== 'rejected' && invoice.status !== 'disbursed'"
+                            type="button"
+                            class="btn btn-outline-success action"
+                            (click)="openModelaccept(i)"
+                          >
+                            <i
+                              class="fa fa-check-square-o"
+                              aria-hidden="true"
+                            ></i>
+                          </button>
+                          <button
+                          *ngIf="invoice.status !== 'rejected' && invoice.status !== 'disbursed'"
+                            type="button"
+                            class="btn btn-outline-danger action"
+                            (click)="openModelReject(i)"
+                          >
+                            <i class="fa fa-times" aria-hidden="true"></i>
+                          </button>
+                            <button
+                              *ngIf="invoice.status === 'rejected'"
+                              type="button"
+                              class="btn btn-outline-danger action"
+                              disabled
+                            >
+                              <i class="fa fa-times" aria-hidden="true"></i>
+                              Rejected
+                            </button>
+                            <button
+                              *ngIf="invoice.status === 'disbursed'"
+                              type="button"
+                              class="btn btn-outline-success action"
+                              disabled
+                            >
+                              <i
+                                class="fa fa-check-square-o"
+                                aria-hidden="true"
+                              ></i>
+                              disbursed
+                            </button>
+                            
+                          </td>
+                          <div class="modal" tabindex="-1" id="myModalAccept" #myModalAccept>
+                            <div class="modal-dialog">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeModelAccept()"></button>
+                                </div>
+                                <div class="modal-body">
+                                  <h5>Are you sure you want to accept this invoice ?</h5>
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" id="accept" class="btn btn-success" data-bs-dismiss="modal" (click)="acceptInvoice()">Yes</button>
+                                  <button type="button" class="btn btn-danger" (click)="closeModelAccept()">No</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="modal" tabindex="-1" id="myModalReject" #myModalReject>
+                            <div class="modal-dialog">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeModelReject()"></button>
+                                </div>
+                                <div class="modal-body">
+                                  <h5>Are you sure you want to Reject this invoice ?</h5>
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" id="accept" class="btn btn-success" data-bs-dismiss="modal" (click)="rejectInvoice()">Yes</button>
+                                  <button type="button" class="btn btn-danger" (click)="closeModelReject()">No</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </tr>
+                        <tr *ngIf="expandedIndex === i">
+                          <td colspan="11">
+                            <h5>invoice number: {{ invoice.invoice_number }}</h5>
+                            <h6>customer Name: {{ invoice.customer_name }}</h6>
+                            <h6>
+                              customer contact: {{ invoice.customer_contact }}
+                            </h6>
+                            <h6>company name: {{ invoice.company_name }}</h6>
+                            <h6>company contact: {{ invoice.company_contact }}</h6>
+                            <h6>quantity: {{ invoice.quantity }}</h6>
+                            <h6>unit price: {{ invoice.company_name }}</h6>
+                            <h6>tax rate: {{ invoice.tax_rate }}</h6>
+                            <h6>tax amount: {{ invoice.tax_amount }}</h6>
+                            <h6>
+                              total amount due: {{ invoice.total_amount_due }}
+                            </h6>
+                          </td>
+                        </tr>
+                      </ng-container>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="pagination-container">
+                  <div class="pagination-left">
+                    <span>
+                      Showing {{ startIndex }} to {{ endIndex }} of
+                      {{ pagination?.totalEntries }} entries
+                    </span>
+                  </div>
+                  <div class="pagination-right">
+                    <button
+                      type="button"
+                      class="btn btn-outline-secondary"
+                      (click)="goToFirstPageSeller()"
+                      [disabled]="pagination?.currentPage === 1"
+                    >
+                      <i class="fa fa-fast-backward" aria-hidden="true"></i>
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-outline-secondary"
+                      (click)="prevPageSeller()"
+                      [disabled]="pagination?.currentPage === 1"
+                    >
+                      <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                    </button>
+                    <span *ngIf="pagination">
+                      Page {{ pagination.currentPage }} of
+                      {{ pagination.totalPages }}
+                    </span>
+    
+                    <button
+                      type="button"
+                      class="btn btn-outline-secondary"
+                      (click)="nextPageSeller()"
+                      [disabled]="!pagination?.hasNextPage"
+                    >
+                      <i class="fa fa-chevron-right" aria-hidden="true"></i>
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-outline-secondary"
+                      (click)="goToLastPageSeller()"
+                      [disabled]="
+                      pagination?.currentPage === pagination?.totalPages
+                      "
+                    >
+                      <i class="fa fa-fast-forward" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <!-- /.container-fluid -->

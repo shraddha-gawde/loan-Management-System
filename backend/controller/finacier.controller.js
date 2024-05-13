@@ -57,7 +57,7 @@ const disburseInvoiceByFinancier = async (req, res) => {
     
     try{
       const where = {
-        status: ['accepted', 'disbursed'] 
+        status: ['accepted', 'disbursed']  
       };
       // const data = await invoiceModel.findAll({where: {userID}} )
   
@@ -91,7 +91,78 @@ const disburseInvoiceByFinancier = async (req, res) => {
       const totalEntries =
         invoice_number || customer_name
           ? await invoiceModel.count({ where })
-          : await invoiceModel.count({ where: {  status: 'accepted' } });
+          : await invoiceModel.count({ where: {  status: ['accepted', 'disbursed'] } });
+  
+          // const BatchID = Batch.BatchID;
+  
+      const totalPages = Math.ceil(totalEntries / limit);
+  
+      res.status(200).json({
+        data: invoices,
+        user: invoices.userID,
+        paginations: {
+          currentPage: page,
+          totalPages,
+          totalEntries,
+          hasNextPage: page < totalPages,
+          hasPreviousPage: page > 1,
+          limit,
+        },
+      });
+    }catch(error){
+      console.error(error);
+      res.status(500).json({ message: "Internal Server Error" });
+      
+    }
+  }
+  const getAllInvoicesrejected = async (req, res) => {
+    const userID = req.userID
+    const { sortBy, sortOrder, invoice_number, customer_name } =
+      req.query;
+    let { page, limit } = req.query;
+    page = parseInt(page) || 1;
+    limit = parseInt(limit) || 5;
+    const offset = (page - 1) * limit;
+  
+    
+    try{
+      const where = {
+        status: 'rejected',
+        rejected_by : userID 
+      };
+      // const data = await invoiceModel.findAll({where: {userID}} )
+  
+      if (invoice_number || customer_name) {
+        if (invoice_number) {
+          where.invoice_number = { [Sequelize.Op.like]: `%${invoice_number}%` };
+        }
+        
+        if (customer_name) {
+          where.customer_name = { [Sequelize.Op.like]: `%${customer_name}%` };
+        }
+      }
+  
+      let order = [];
+      if (sortBy && (sortOrder === "ASC" || sortOrder === "DESC")) {
+        order.push([sortBy, sortOrder]);
+      }
+      const invoices = await invoiceModel.findAll({
+        where,
+        order,
+        limit,
+        offset,
+        include: [
+          { model: userModel, as: 'acceptedByInvoice', attributes: ['username'] },
+          { model: userModel, as: 'createdByInvoice', attributes: ['username'] },
+          { model: userModel, as: 'rejectedByInvoice', attributes: ['username'] },
+          { model: userModel, as: 'disbursedByInvoice', attributes: ['username'] },
+          { model: batchFilesModel, as: 'Batch_ID', attributes: ['BatchID'] }
+        ]});
+  
+      const totalEntries =
+        invoice_number || customer_name
+          ? await invoiceModel.count({ where })
+          : await invoiceModel.count({ where: {  status: 'rejected', rejected_by: userID } });
   
           // const BatchID = Batch.BatchID;
   
@@ -116,9 +187,9 @@ const disburseInvoiceByFinancier = async (req, res) => {
     }
   }
   
-  
 module.exports= {
     disburseInvoiceByFinancier,
-    getAllInvoicesAcceptedBySellers
+    getAllInvoicesAcceptedBySellers,
+    getAllInvoicesrejected
 }
   

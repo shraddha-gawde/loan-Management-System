@@ -6,17 +6,14 @@ import {
   OnInit,
   ViewChild,
   inject,
-  viewChild,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../auth.service';
-import { FormsModule, NgForm, ReactiveFormsModule } from '@angular/forms';
-import { Chart, registerables } from 'chart.js';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CreatePiechartComponent } from '../create-piechart/create-piechart.component';
 import { CreateBarchartComponent } from '../create-barchart/create-barchart.component';
 import jsPDF from 'jspdf';
 
-import html2canvas from 'html2canvas';
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
 @Component({
@@ -523,6 +520,7 @@ export class BuyerDashboardComponent implements OnInit {
   //   return 'Detailed Report Content';
   // }
 }
+
 export class batchData {
   id: string = '';
   name: string = '';
