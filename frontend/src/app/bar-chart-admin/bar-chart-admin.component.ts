@@ -62,6 +62,8 @@ export class BarChartAdminComponent {
     }, ${labelDate.getFullYear()}`;
     return formattedCreateDate;
   }
+
+  
   createChart() {
     const data = {
       labels: this.ratesByDate.ratesByDate.map((rate: any) => this.formatDate(rate.date)),
@@ -110,7 +112,24 @@ export class BarChartAdminComponent {
       options: {
         scales: {
           y: {
-            beginAtZero: true
+            beginAtZero: true,
+            ticks: {
+              callback: (value) => value + '%'
+            }
+          }
+        },
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: (context: any) => {
+                let label = context.dataset.label || '';
+                if (label) {
+                  label += ': ';
+                }
+                label += context.parsed.y + '%';
+                return label;
+              }
+            }
           }
         }
       }

@@ -2,9 +2,8 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import { Chart, registerables } from 'chart.js';
 import { AuthService } from '../auth.service';
-
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 Chart.register(...registerables);
-
 @Component({
   selector: 'demo-pie-chart-admin',
   standalone: true,
@@ -58,7 +57,7 @@ export class PieChartAdminComponent {
     const myChart = new Chart('piechart', {
       type: 'pie',
       data: {
-        labels: ['seller', 'buyer', 'financier', 'admin'],
+        labels: ['Sellers', 'Buyers', 'Financiers', 'Admin'],
         datasets: [
           {
             label: 'available users',
@@ -72,6 +71,24 @@ export class PieChartAdminComponent {
             hoverOffset: 10,
           },
         ],
+      },
+      plugins: [ChartDataLabels],
+      options: {
+        plugins: {
+          // Change options for ALL labels of THIS CHART
+          datalabels: {
+            color: 'white'
+          }
+        // plugins: {
+        //   datalabels: {
+        //     color: '#fff', // Color of the label text
+        //     formatter: (value: any) => {
+        //       // Format the label text (optional)
+        //       return value.toLocaleString();
+        //     },
+        //   },
+        // },
+        }
       },
     });
   }

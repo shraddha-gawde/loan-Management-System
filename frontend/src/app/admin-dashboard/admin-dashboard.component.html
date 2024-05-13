@@ -16,7 +16,7 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h4 class="modal-title">Create New  Data</h4>
+            <h4 class="modal-title">Create New Admin</h4>
             <button
               type="button"
               class="btn-close"
@@ -36,7 +36,7 @@
                 />
               </div>
               <div class="col-8">
-                <label for="" *ngIf="!userObj.userID">password</label>
+                <label for="" *ngIf="!userObj.userID">Password</label>
                 <input
                   type="password"
                   [(ngModel)]="userObj.password" *ngIf="!userObj.userID"
@@ -58,7 +58,7 @@
                 
               </div>
               <div class="col-6">
-                <label for="">company Name</label>
+                <label for="">Company Name</label>
                 <input
                   type="text"
                   [(ngModel)]="userObj.companyName"
@@ -70,7 +70,7 @@
             </div>
             <div class="row">
               <div class="col-4">
-                <label for="">contact Person</label>
+                <label for="">Contact Person</label>
                 <input
                   type="text"
                   [(ngModel)]="userObj.contactPerson"
@@ -91,7 +91,7 @@
                 />
               </div>
               <div class="col-4">
-                <label for="">phone</label>
+                <label for="">Phone</label>
                 <input
                   type="number"
                   [(ngModel)]="userObj.phone"
@@ -107,7 +107,7 @@
                   <input type="text" [(ngModel)]="userObj.city" class="form-control" placeholder="Enter city name">
                 </div>
                 <div class="col-6">
-                  <label for="">country</label>
+                  <label for="">Country</label>
                   <input type="text" [(ngModel)]="userObj.country" class="form-control" placeholder="Enter country name" required>
                 </div>
               </div>
@@ -115,7 +115,7 @@
             </div>
             <div class="row">
               <div class="col-12">
-                <label for="">address</label>
+                <label for="">Address</label>
                 <textarea
                   rows="3"
                   [(ngModel)]="userObj.address"
@@ -188,11 +188,6 @@
           >
         </li>
 
-        <!-- Divider -->
-        <hr class="sidebar-divider" />
-
-        <!-- Heading -->
-        <div class="sidebar-heading">Interface</div>
 
         <li class="nav-item" [ngClass]="{ active: showAdministrators }">
           <a
@@ -269,15 +264,7 @@
             <span>Financiers</span>
           </a>
         </li>
-        <!-- Divider -->
-        <hr class="sidebar-divider" />
-
-        <li class="nav-item">
-          <a class="nav-link" href="#">
-            <i class="fas fa-fw fa-chart-area"></i>
-            <span>Charts</span></a
-          >
-        </li>
+       
 
         <!-- Divider -->
         <hr class="sidebar-divider d-none d-md-block" />
@@ -376,6 +363,13 @@
                     Logout
                   </a>
                 </div>
+              </li>
+              <li>
+                <button style="margin: 10px; border-radius: 50%; border: none; background-color: white;">
+                  <a href="http://localhost:4200" style="text-decoration: none"
+                    ><i class="fa fa-sign-out fa-2x" aria-hidden="true"></i
+                  ></a>
+                </button>
               </li>
             </ul>
           </nav>
@@ -485,7 +479,7 @@
                   <div class="card shadow mb-4">
                     <div
                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Dailly activity of User</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Dailly activity of Users</h6>
                       
                      </div>
                       <demo-bar-chart-admin></demo-bar-chart-admin>

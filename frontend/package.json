@@ -26,6 +26,7 @@
     "angular-font-awesome": "^3.1.2",
     "bootstrap": "^5.3.3",
     "chart.js": "^4.4.2",
+    "chartjs-plugin-datalabels": "^2.2.0",
     "file-saver": "^2.0.5",
     "filesaver": "^0.0.13",
     "font-awesome": "^4.7.0",
