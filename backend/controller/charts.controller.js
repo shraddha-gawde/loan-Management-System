@@ -293,6 +293,74 @@ const getInvoicesByStatusFinance = async (req, res) => {
   }
 };
 
+
+const getRatesByDate = async (req, res) => {
+  try {
+    const userID = req.userID;
+
+    const rates = await invoiceModel.findAll({
+      attributes: [
+        [Sequelize.fn('DATE', Sequelize.col('updated_at')), 'date'],
+        // [Sequelize.fn("COUNT", Sequelize.col("id")), "total_invoices"],
+        [
+          Sequelize.literal(
+            "SUM(CASE WHEN accepted_by IS NOT NULL THEN 1 ELSE 0 END)"
+          ),
+          "accepted_invoices",
+        ],
+        [
+          Sequelize.literal(
+            "SUM(CASE WHEN rejected_by IS NOT NULL THEN 1 ELSE 0 END)"
+          ),
+          "rejected_invoices",
+        ],
+        [
+          Sequelize.literal(
+            "SUM(CASE WHEN disbursed_by IS NOT NULL THEN 1 ELSE 0 END)"
+          ),
+          "disbursed_invoices",
+        ],
+        [
+          Sequelize.literal(
+            "SUM(CASE WHEN created_by IS NOT NULL THEN 1 ELSE 0 END)"
+          ),
+          "created_invoices",
+        ],
+      ],
+      where: {
+        // Filter invoices related to the user
+        [Op.or]: [
+          { created_by: { [Op.not]: null } },
+          { accepted_by: { [Op.not]: null } },
+          { rejected_by: { [Op.not]: null } },
+          { disbursed_by: { [Op.not]: null } },
+        ],
+      },
+      order: [[Sequelize.literal('DATE(updated_at)'), 'DESC']], 
+      limit: 5,
+      raw: true,
+      group: [Sequelize.fn('DATE', Sequelize.col('updated_at'))] 
+    });
+    console.log(rates)
+const total_invoices = await invoiceModel.count()
+// console.log(rates[].created_invoices)
+    const ratesByDate = rates.map(rate => ({
+      
+      date: rate.date,
+      uploadRate: (rate.created_invoices / total_invoices) * 100,
+      acceptedRate: (rate.accepted_invoices / total_invoices) * 100,
+      rejectedRate: (rate.rejected_invoices / total_invoices) * 100,
+      disbursedRate: (rate.disbursed_invoices / total_invoices) * 100,
+    }));
+console.log(total_invoices)
+
+    res.status(200).json({ ratesByDate });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error", error: error });
+  }
+}
+
 module.exports = {
   getInvoicesByStatus,
   getCountByDate,
@@ -304,5 +372,6 @@ module.exports = {
   disburseAmountsFinancier,
   getInvoicesByStatusSeller,
   getCountByDateFinancier,
-  getInvoicesByStatusFinance
+  getInvoicesByStatusFinance,
+  getRatesByDate
 };

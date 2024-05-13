@@ -449,6 +449,12 @@
                       
                       <div class="tableDiv" id="content" #content>
                         <h2>summary report :</h2>
+                        <h4>User Details:</h4> 
+                        <p>user name: {{reportData.user.username}}</p>
+                        <p>Contact: {{reportData.user.phone}}</p>
+                        <p>email: {{reportData.user.email}}</p>
+                        <p>Company name: {{reportData.user.companyName}}</p>
+                        
                         <table *ngIf="reportData">
                           <thead>
                             <tr>
@@ -537,10 +543,16 @@
                       
                     </div>
                     <div *ngIf="reportData && reportType === 'detailed'">
-                      <h2>Detailed report :</h2>
+                      
                       
                       <div class="tableDiv" id="detailedcontent" #detailedcontent>
-
+                        <h2>Detailed report :</h2>
+                        <h4>User Details:</h4> 
+                        <p>user name: {{reportData.user.username}}</p>
+                        <p>Contact: {{reportData.user.phone}}</p>
+                        <p>email: {{reportData.user.email}}</p>
+                        <p>Company name: {{reportData.user.companyName}}</p>
+                        
                         <h2>Disbursed Invoices :</h2>
                           <table *ngIf="reportData.disbursedInvoices && reportData.disbursedInvoices.length > 0" style="margin-bottom: 25px;">
                               <!-- Table header -->

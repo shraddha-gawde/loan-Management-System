@@ -15,7 +15,7 @@ const { access } = require("../middlewares/acess.middleware");
 const {  getInvoices, uploadInvoiceBatch, getinvoiceByID, downloadExcel,  getInvoiceBatch, getInvoiceBatchByUser, acceptInvoiceBySeller, getInvoicesAcceptedBySeller, rejectInvoiceBySeller } = require("../controller/dashboard.controller");
 const upload = require("../middlewares/multer.middleware");
 const { disburseInvoiceByFinancier, getAllInvoicesAcceptedBySellers, getAllInvoicesrejected } = require("../controller/finacier.controller");
-const { getInvoicesByStatus, getCountByDate, countbatches, totalBatches, disburseAmounts, disburseAmountsSeller, totalinvoicesAccepted, disburseAmountsFinancier, getInvoicesByStatusSeller, getCountByDateFinancier, getInvoicesByStatusFinance } = require("../controller/charts.controller");
+const { getInvoicesByStatus, getCountByDate, countbatches, totalBatches, disburseAmounts, disburseAmountsSeller, totalinvoicesAccepted, disburseAmountsFinancier, getInvoicesByStatusSeller, getCountByDateFinancier, getInvoicesByStatusFinance, getRatesByDate } = require("../controller/charts.controller");
 const { report, reportSeller, reportFinancier } = require("../controller/report.controller");
 
 router.use(express.json())
@@ -72,6 +72,8 @@ router.post('/report', access(['chartData']), report)
 router.get('/seller', access(['chartData']), getInvoicesByStatusSeller)
 router.post('/reportSeller', access(['chartData']), reportSeller)
 router.post('/reportFinance', access(['chartData']), reportFinancier)
+router.get('/rates', access(['updateUser']), getRatesByDate)
+
 module.exports = {
   router,
 };

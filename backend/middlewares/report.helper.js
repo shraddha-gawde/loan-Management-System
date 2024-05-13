@@ -69,6 +69,7 @@ const generateSummaryReport = async (userID, startDate, endDate) => {
   
   const generateDetailedReport = async (userID, startDate, endDate) => {
     try {
+      const user = await userModel.findOne({ where: { userID } });
       const acceptedInvoices = await invoiceModel.findAll({
         where: {
           created_by: userID,
@@ -122,7 +123,7 @@ const generateSummaryReport = async (userID, startDate, endDate) => {
         ],
       });
   
-      return { acceptedInvoices, rejectedInvoices, disbursedInvoices, batches };
+      return { user, acceptedInvoices, rejectedInvoices, disbursedInvoices, batches };
     } catch (error) {
       console.error("Error generating detailed report:", error);
       throw error;

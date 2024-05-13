@@ -516,7 +516,6 @@ export class BuyerDashboardComponent implements OnInit {
   // }
 
   // private generateDetailedContent(): string {
-  //   // Generate detailed content based on your requirements
   //   return 'Detailed Report Content';
   // }
 }
