@@ -31,8 +31,9 @@ body {
     white-space: nowrap; 
   }
   .serchMain{
-  margin-bottom: 50px;
-}
+    margin-top: 40px;
+  margin-bottom: 30px;
+  }
   label, select , option, input, button{
     font-size: 12px;
   }
@@ -41,7 +42,40 @@ body {
     display: flex;
     align-items: center;
   }
-
+  .tableDiv{
+    /* display: flex; */
+    /* justify-content: center; */
+    border-color: #b3b3b3;
+    border-radius: 15px;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+      padding-top: 10px;
+      padding-bottom: 10px;
+      margin: auto;
+      font-size: 16px;
+  }
+  #usercontent{
+    text-align: center;
+    border: solid 2px #0e9cfc;
+    border-radius: 15px;
+    padding-bottom: 20px;
+    
+  }
+  #usercontent h2{
+    border: 15px;
+    color: white;
+    background-color: #0e9cfc;
+  }
+  #detailedcontent{
+    text-align: center;
+    border: solid 2px #0e9cfc;
+    border-radius: 15px;
+    padding-bottom: 20px;
+  }
+  #detailedcontent h2{
+    border: 15px;
+    color: white;
+    background-color: #0e9cfc;
+  }
   .pagination-right button{
     border: none;
   }
@@ -84,6 +118,10 @@ body {
     align-items: flex-start;
     align-content: flex-start;
   }
+  .col-md-6 button{
+    margin-right: 20px;
+  }
+  
   .status-uploaded {
     color: orange;
     border-radius: 15px;
@@ -101,20 +139,19 @@ body {
   }
   
   .status-accepted {
-    color: green;
+    color: yellow;
     border-radius: 15px;
-    border: solid 1px green;
+    border: solid 1px yellow;
     font-weight: 900;
     background-color: #effce6;
   }
   
   .status-disbursed {
-    color: yellow;
+    color: green;
     border-radius: 15px;
     border: solid 1px green;
     font-weight: 900;
-    /* padding: 2px; */
-    background-color: green;
+    background-color: #effce6;
   }
   .status-partially-accepted {
     color: rgb(0, 0, 0);

@@ -14,6 +14,7 @@ import { PieChartSellerComponent } from '../pie-chart-seller/pie-chart-seller.co
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 @Component({
   selector: 'demo-seller-dashboard',
@@ -192,7 +193,38 @@ information: any
           this.invoices.forEach((invoice) => {
             this.acceptedStatus[invoice.id] = invoice.status === 'accepted';
           });
-          this.invoices = response.data;
+          this.invoices = response.data.map((invoice: any, index: number) => {
+            const invoiceDate = new Date(invoice.invoice_date);
+            const dueDate = new Date(invoice.due_date);
+            const months = [
+              'Jan',
+              'Feb',
+              'March',
+              'Apr',
+              'May',
+              'June',
+              'July',
+              'Aug',
+              'Sep',
+              'Oct',
+              'Nov',
+              'Dec',
+            ];
+            const formattedInvoiceDate = `${invoiceDate.getDate()} ${
+              months[invoiceDate.getMonth()]
+            }, ${invoiceDate.getFullYear()}`;
+            const formattedDueDate = `${dueDate.getDate()} ${
+              months[dueDate.getMonth()]
+            }, ${dueDate.getFullYear()}`;
+            return {
+              ...invoice,
+              invoice_date: formattedInvoiceDate,
+              due_date: formattedDueDate,
+              index: index,
+            };
+          });
+          
+          
           this.pagination = response.paginations;
           console.log(this.invoices);
           this.calculateRange();
@@ -529,27 +561,22 @@ information: any
   
   exportReport(format: string): void {
     if (format === 'pdf') {
-      if (this.reportType === 'summary') {
-        const pdf = new jsPDF('p', 'pt', 'a4', true);
-        console.log(this.el);
-        pdf.html(this.el.nativeElement, {
-          width: 200,
-          callback: (pdf) => {
-            const pdfFile = pdf.output('blob');
-            FileSaver.saveAs(pdfFile, 'Summary_report.pdf');
-          },
-        });
-      } else if (this.reportType === 'detailed') {
-        const pdf = new jsPDF('l', 'pt', 'a4', true);
-        console.log(this.detailed);
-        pdf.html(this.detailed.nativeElement, {
-          width: 200,
-          callback: (pdf) => {
-            const pdfFile = pdf.output('blob');
-            FileSaver.saveAs(pdfFile, 'Detailed_report.pdf');
-          },
-        });
+      const pdf = new jsPDF();
+      const options = { background: 'white', scale: 3 };
+
+      const reportResult = document.getElementById('reportResult');
+      if (!reportResult) {
+        console.error('Report result element not found.');
+        return;
       }
+
+      html2canvas(reportResult, options).then((canvas) => {
+        const contentDataURL = canvas.toDataURL('image/png');
+        const imgWidth = 210; // A4 page width in mm
+        const imgHeight = canvas.height * imgWidth / canvas.width;
+        pdf.addImage(contentDataURL, 'PNG', 0, 0, imgWidth, imgHeight);
+        pdf.save('report.pdf');
+      });
     }else if (format === 'csv') {
       const reportResult = document.getElementById('reportResult');
       if (reportResult) {

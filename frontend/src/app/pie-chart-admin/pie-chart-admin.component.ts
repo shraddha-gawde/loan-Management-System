@@ -75,7 +75,6 @@ export class PieChartAdminComponent {
       plugins: [ChartDataLabels],
       options: {
         plugins: {
-          // Change options for ALL labels of THIS CHART
           datalabels: {
             color: 'white'
           }

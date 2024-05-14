@@ -103,6 +103,7 @@ const addUser = async (req, res) => {
   const {
     username,
     password,
+    confirmPassword,
     roleID,
     companyName,
     contactPerson,
@@ -115,6 +116,16 @@ const addUser = async (req, res) => {
   try {
     const existingUsername = await userModel.findOne({ where: { username } });
     const existingUseremail = await userModel.findOne({ where: { email } });
+    if (
+      !/[A-Z]/.test(password) ||
+      !/\d/.test(password) ||
+      !/[!@#$%^&*()_+{}[;]/.test(password) ||
+      password.length < 8
+    ) {
+      return res.status(400).json({
+        msg: "Cannot register, password must contain at least 1 character, one capital letter, and minimum length 8",
+      });
+    }
     if (existingUsername) {
       return res
         .status(400)
@@ -124,6 +135,12 @@ const addUser = async (req, res) => {
       return res
         .status(400)
         .json({ msg: "user with the same email already exists" });
+    }
+    if (password !== confirmPassword) {
+      return res.status(400).json({ msg: "Password and confirm password do not match" });
+    }
+    if (phone.length !== 10) {
+      return res.status(400).json({ msg: "Phone number must be 10 digits long" });
     }
     const hashedPassword = await bcrypt.hash(password, 5);
     let roleid;

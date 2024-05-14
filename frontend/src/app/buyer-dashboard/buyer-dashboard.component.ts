@@ -16,6 +16,7 @@ import jsPDF from 'jspdf';
 
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
+import html2canvas from 'html2canvas';
 @Component({
   selector: 'demo-buyer-dashboard',
   standalone: true,
@@ -397,51 +398,27 @@ export class BuyerDashboardComponent implements OnInit {
   
   
   exportReport(format: string): void {
+
     if (format === 'pdf') {
-      if (this.reportType === 'summary') {
-        const pdf = new jsPDF('p', 'pt', 'a4', true);
-        console.log(this.el);
-        pdf.html(this.el.nativeElement, {
-          width: 200,
-          callback: (pdf) => {
-            const pdfFile = pdf.output('blob');
-            FileSaver.saveAs(pdfFile, 'Summary_report.pdf');
-          },
-        });
-      } else if (this.reportType === 'detailed') {
-        const pdf = new jsPDF('l', 'pt', 'a4', true);
-        console.log(this.detailed);
-        pdf.html(this.detailed.nativeElement, {
-          width: 200,
-          callback: (pdf) => {
-            const pdfFile = pdf.output('blob');
-            FileSaver.saveAs(pdfFile, 'Detailed_report.pdf');
-          },
-        });
+      const pdf = new jsPDF();
+      const options = { background: 'white', scale: 3 };
+
+      const reportResult = document.getElementById('reportResult');
+      if (!reportResult) {
+        console.error('Report result element not found.');
+        return;
       }
 
-      // const options = { background: 'white', scale: 3 };
+      html2canvas(reportResult, options).then((canvas) => {
+        const contentDataURL = canvas.toDataURL('image/png');
+        const imgWidth = 210; // A4 page width in mm
+        const imgHeight = canvas.height * imgWidth / canvas.width;
+        pdf.addImage(contentDataURL, 'PNG', 0, 0, imgWidth, imgHeight);
+        pdf.save('report.pdf');
+      });
+    }
 
-      // const reportResult = this.elementRef.nativeElement.querySelector('#reportResult');
-      // let content: string;
-
-      // if (this.reportType === 'summary') {
-      //   content = this.generateSummaryContent();
-      // } else if (this.reportType === 'detailed') {
-      //   content = this.generateDetailedContent();
-      // } else {
-      //   console.error('Invalid report type specified.');
-      //   return;
-      // }
-
-      // if (reportResult) {
-      //   pdf.text(content, 10, 10);
-      //   const pdfFile = pdf.output('blob');
-      //   FileSaver.saveAs(pdfFile, 'report.pdf');
-      // } else {
-      //   console.error('Report result element not found.');
-      // }
-    }else if (format === 'csv') {
+    else if (format === 'csv') {
       const reportResult = document.getElementById('reportResult');
       if (reportResult) {
         const tables = Array.from(reportResult.querySelectorAll('table'));

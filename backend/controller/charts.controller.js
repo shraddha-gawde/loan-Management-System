@@ -301,7 +301,6 @@ const getRatesByDate = async (req, res) => {
     const rates = await invoiceModel.findAll({
       attributes: [
         [Sequelize.fn('DATE', Sequelize.col('updated_at')), 'date'],
-        // [Sequelize.fn("COUNT", Sequelize.col("id")), "total_invoices"],
         [
           Sequelize.literal(
             "SUM(CASE WHEN accepted_by IS NOT NULL THEN 1 ELSE 0 END)"
@@ -328,7 +327,6 @@ const getRatesByDate = async (req, res) => {
         ],
       ],
       where: {
-        // Filter invoices related to the user
         [Op.or]: [
           { created_by: { [Op.not]: null } },
           { accepted_by: { [Op.not]: null } },

@@ -30,9 +30,11 @@ body {
   td{
     white-space: nowrap; 
   }
+
   .serchMain{
-  margin-bottom: 50px;
-}
+    margin-top: 70px;
+  margin-bottom: 30px;
+  }
   label, select , option, input, button{
     font-size: 12px;
   }
@@ -69,6 +71,10 @@ body {
 .form-group button{
   margin-top: 23px;
 }
+.col-md-6 button{
+  margin-right: 20px;
+}
+
   .search-box{
     display: flex;
     flex-direction: row;
@@ -101,20 +107,19 @@ body {
   }
   
   .status-accepted {
-    color: green;
+    color: yellow;
     border-radius: 15px;
-    border: solid 1px green;
+    border: solid 1px yellow;
     font-weight: 900;
     background-color: #effce6;
   }
   
   .status-disbursed {
-    color: yellow;
+    color: green;
     border-radius: 15px;
     border: solid 1px green;
     font-weight: 900;
-    /* padding: 2px; */
-    background-color: green;
+    background-color: #effce6;
   }
   .status-partially-accepted {
     color: rgb(0, 0, 0);
@@ -134,7 +139,40 @@ body {
       padding-top: 10px;
       padding-bottom: 10px;
   }
-  
+  .tableDiv{
+    /* display: flex; */
+    /* justify-content: center; */
+    border-color: #b3b3b3;
+    border-radius: 15px;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+      padding-top: 10px;
+      padding-bottom: 10px;
+      margin: auto;
+      font-size: 16px;
+  }
+  #usercontent{
+    text-align: center;
+    border: solid 2px #0e9cfc;
+    border-radius: 15px;
+    padding-bottom: 20px;
+    
+  }
+  #usercontent h2{
+    border: 15px;
+    color: white;
+    background-color: #0e9cfc;
+  }
+  #detailedcontent{
+    text-align: center;
+    border: solid 2px #0e9cfc;
+    border-radius: 15px;
+    padding-bottom: 20px;
+  }
+  #detailedcontent h2{
+    border: 15px;
+    color: white;
+    background-color: #0e9cfc;
+  }
   tbody, tr{
     border: solid 1px #b3b3b3;
     margin: auto;
@@ -222,21 +260,7 @@ body {
     width: 2rem;
   }
   
-  .topbar {
-    height: 4.375rem;
-  }
-  
-  
-  
-  .topbar .navbar-search {
-    width: 25rem;
-  }
-  
-  .topbar .navbar-search input {
-    font-size: 0.85rem;
-    height: auto;
-  }
-  
+ 
   .topbar .topbar-divider {
     width: 0;
     border-right: 1px solid #e3e6f0;

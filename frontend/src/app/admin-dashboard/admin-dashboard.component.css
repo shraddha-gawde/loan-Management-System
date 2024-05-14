@@ -36,6 +36,12 @@ margin-bottom: 100px;
 label, select , option, input, button{
   font-size: 12px;
 }
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
+  text-align: center;
+}
 
 .pagination-left {
   display: flex;
@@ -136,6 +142,17 @@ margin-top: 23px;
     padding-bottom: 10px;
 }
 
+.tableDiv{
+  /* display: flex; */
+  /* justify-content: center; */
+  border-color: #b3b3b3;
+  border-radius: 15px;
+  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin: auto;
+}
+
 tbody, tr{
   border: solid 1px #b3b3b3;
   margin: auto;
@@ -169,12 +186,14 @@ td{
 .action {
   /* margin: 1px; */
   /* margin-top: 2.5px; */
-  padding: 10%;
+  /* padding: 10%; */
   border: none;
+  /* background-color: white; */
+  /* color: blue; */
   
 }
-td button{
-  margin: 2.5px
+.required {
+  color: red;
 }
 html {
   position: relative;

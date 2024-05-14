@@ -31,7 +31,8 @@ td{
   white-space: nowrap; 
 }
 .serchMain{
-margin-bottom: 100px;
+  margin-top: 70px;
+margin-bottom: 30px;
 }
 label, select , option, input, button{
   font-size: 12px;
@@ -59,6 +60,10 @@ label, select , option, input, button{
   margin-bottom: 20px;
   align-content: center;
   text-align: center;
+}
+
+.col-md-6 button{
+  margin-right: 20px;
 }
 
 .pagination{
@@ -102,20 +107,19 @@ margin-top: 23px;
 }
 
 .status-accepted {
-  color: green;
+  color: yellow;
   border-radius: 15px;
-  border: solid 1px green;
+  border: solid 1px yellow;
   font-weight: 900;
   background-color: #effce6;
 }
 
 .status-disbursed {
-  color: yellow;
+  color: green;
   border-radius: 15px;
   border: solid 1px green;
   font-weight: 900;
-  /* padding: 2px; */
-  background-color: green;
+  background-color: #effce6;
 }
 .status-partially-accepted {
   color: rgb(0, 0, 0);
@@ -145,6 +149,30 @@ margin-top: 23px;
     padding-top: 10px;
     padding-bottom: 10px;
     margin: auto;
+    font-size: 16px;
+}
+#usercontent{
+  text-align: center;
+  border: solid 2px #0e9cfc;
+  border-radius: 15px;
+  padding-bottom: 20px;
+  
+}
+#usercontent h2{
+  border: 15px;
+  color: white;
+  background-color: #0e9cfc;
+}
+#detailedcontent{
+  text-align: center;
+  border: solid 2px #0e9cfc;
+  border-radius: 15px;
+  padding-bottom: 20px;
+}
+#detailedcontent h2{
+  border: 15px;
+  color: white;
+  background-color: #0e9cfc;
 }
 
 tbody, tr{

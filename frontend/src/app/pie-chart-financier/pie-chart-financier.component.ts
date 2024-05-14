@@ -58,7 +58,7 @@ export class PieChartFinancierComponent {
     const myChart = new Chart('piechart', {
       type: 'doughnut',
       data: {
-        labels: ['Rejected', 'Pending' ,'disbursed'],
+        labels: ['Rejected', 'Pending' ,'Disbursed'],
         datasets: [
           {
             label: 'Status Analysis',

@@ -20,7 +20,7 @@
         <!-- Sidebar - logo -->
         <a
           class="sidebar-brand d-flex align-items-center justify-content-center"
-          routerLink="/buyerDashboard"
+          routerLink="/financierDashboard"
         >
           <div class="sidebar-brand-icon rotate-n-15">
             <i class="fas fa-laugh-wink"></i>
@@ -67,7 +67,7 @@
             class="nav-link cursor-pointer"
           >
             <i class="fa fa-cog"></i>
-            <span>Show all Programs</span>
+            <span>Show All Programs</span>
         </a>
         </li>
   
@@ -88,7 +88,7 @@
             class="nav-link cursor-pointer"
           >
           <i class="fa fa-check-square-o" aria-hidden="true"></i>
-            <span>accepted invoices</span>
+            <span>Accepted Invoices</span>
           </a>
         </li>
 
@@ -108,7 +108,7 @@
             class="nav-link cursor-pointer"
           >
           <i class="fa fa-times" aria-hidden="true"></i>
-            <span>Rejected invoices</span>
+            <span>Rejected Invoices</span>
           </a>
         </li>
   
@@ -139,9 +139,9 @@
               <div class="topbar-divider d-none d-sm-block"></div>
   
               <!-- Nav Item - User Information -->
-              <li class="nav-item dropdown">
+              <li class="nav-item">
                 <a
-                  class="nav-link dropdown-toggle"
+                  class="nav-link"
                   href="http://localhost:4200/login"
                   id="userDropdown"
                   role="button"
@@ -160,36 +160,7 @@
                     src="https://t4.ftcdn.net/jpg/05/89/93/27/360_F_589932782_vQAEAZhHnq1QCGu5ikwrYaQD0Mmurm0N.jpg"
                   />
                 </a>
-                <!-- Dropdown - User Information -->
-                <div
-                  class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                  aria-labelledby="userDropdown"
-                >
-                  <a class="dropdown-item" href="http://localhost:4200/login">
-                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Profile
-                  </a>
-                  <a class="dropdown-item" href="#">
-                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Settings
-                  </a>
-                  <a class="dropdown-item" href="#">
-                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Activity Log
-                  </a>
-                  <div class="dropdown-divider"></div>
-                  <a
-                    class="dropdown-item"
-                    href="#"
-                    data-toggle="modal"
-                    data-target="#logoutModal"
-                  >
-                    <i
-                      class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"
-                    ></i>
-                    Logout
-                  </a>
-                </div>
+                
               </li>
               <li>
                 <button style="margin: 10px; border-radius: 50%; border: none; background-color: white;">
@@ -281,7 +252,7 @@
                         </div>
                         <div class="col-auto">
                           <i
-                            class="fa fa-spinner   fa-2x"
+                            class="fa fa-inr fa-2x"
                             style="color: gray; font-weight: 300"
                             aria-hidden="true"
                           ></i>
@@ -346,7 +317,7 @@
                         </div>
                         <div class="col-auto">
                           <i
-                            class="fa fa-comments fa-2x"
+                            class="fa fa-files-o fa-2x"
                             style="color: gray; font-weight: 300"
                             aria-hidden="true"
                           ></i>
@@ -460,14 +431,13 @@
                       
                       <div *ngIf="reportData && reportType === 'summary'" >
                         
-                        <div class="tableDiv" id="content" #content>
-                          <h2>summary report :</h2>
-                          <h4>User Details:</h4> 
-                          <p>user name: {{reportData.user.username}}</p>
+                        <div id="usercontent" #usercontent>
+                          <h2>SUMMARY REPORT</h2>
+                          <p>Username: {{reportData.user.username}}</p>
                           <p>Contact: {{reportData.user.phone}}</p>
-                          <p>email: {{reportData.user.email}}</p>
+                          <p>Email: {{reportData.user.email}}</p>
                           <p>Company name: {{reportData.user.companyName}}</p>
-                          <table *ngIf="reportData">
+                          <table *ngIf="reportData" class="tableDiv">
                             <thead>
                               <tr>
                                 <th>#</th>
@@ -529,24 +499,26 @@
                       </div>
                       <div *ngIf="reportData && reportType === 'detailed'">
                         
-                        <div class="tableDiv" id="detailedcontent" #detailedcontent>
-                          <h2>Detailed report :</h2>
-                          <h4>User Details:</h4> 
-                            <p>user name: {{reportData.user.username}}</p>
+                      <div
+                        id="detailedcontent"
+                        #detailedcontent
+                      >
+                        <h2>DETAILED REPORT</h2>
+                            <p>Username: {{reportData.user.username}}</p>
                             <p>Contact: {{reportData.user.phone}}</p>
                             <p>email: {{reportData.user.email}}</p>
                             <p>Company name: {{reportData.user.companyName}}</p>
                               
                           <h2>Disbursed Invoices :</h2>
-                            <table *ngIf="reportData.disbursedInvoices && reportData.disbursedInvoices.length > 0" style="margin-bottom: 25px;">
+                            <table class="tableDiv" *ngIf="reportData.disbursedInvoices && reportData.disbursedInvoices.length > 0" style="margin-bottom: 25px;">
                                 <!-- Table header -->
                                 <thead>
                                     <tr>
                                         <th>Invoice Number</th>
                                         <th>Invoice Amount</th>
                                         <th>Batch ID</th>
-                                        <th>created By</th>
-                                        <th>accepted By</th>
+                                        <th>Created By</th>
+                                        <th>Accepted By</th>
                                     </tr>
                                 </thead>
                                 <!-- Table body -->
@@ -562,7 +534,7 @@
                                 </tbody>
                             </table>
                             <h2>Accepted Invoices: </h2>
-                            <table *ngIf="reportData.acceptedInvoices && reportData.acceptedInvoices.length > 0" style="margin-bottom: 25px;">
+                            <table class="tableDiv" *ngIf="reportData.acceptedInvoices && reportData.acceptedInvoices.length > 0" style="margin-bottom: 25px;">
                                 <!-- Table header -->
                                 <thead>
                                     <tr>
@@ -570,7 +542,7 @@
                                         <th>Invoice Amount</th>
                                         <th>Batch ID</th>
                                         <th>Created By</th>
-                                        <th>accepted By</th>
+                                        <th>Accepted By</th>
                                     </tr>
                                 </thead>
                                 <!-- Table body -->
@@ -586,7 +558,7 @@
                                 </tbody>
                             </table>
                             <h2>Rejected Invoices: </h2>
-                            <table *ngIf="reportData.rejectedInvoices && reportData.rejectedInvoices.length > 0" style="margin-bottom: 25px;">
+                            <table class="tableDiv" *ngIf="reportData.rejectedInvoices && reportData.rejectedInvoices.length > 0" style="margin-bottom: 25px;">
                                 <!-- Table header -->
                                 <thead>
                                     <tr>
@@ -610,7 +582,7 @@
                                 </tbody>
                             </table>
                             <h2>Accepted whole Batches</h2>
-                            <table *ngIf="reportData.batches && reportData.batches.length > 0" style="margin-bottom: 25px;">
+                            <table class="tableDiv" *ngIf="reportData.batches && reportData.batches.length > 0" style="margin-bottom: 25px;">
                                 <!-- Table header -->
                                 <thead>
                                     <tr>
@@ -656,7 +628,7 @@
                 <div class="serchMain">
                   <div class="search-box">
                     <div class="form-group1" id="limit">
-                      <label for="limit">select limit: </label>
+                      <label for="limit">Entries per page: </label>
                       <select
                         id="status"
                         [(ngModel)]="limit"
@@ -716,10 +688,10 @@
                             aria-hidden="true"
                           ></i>
                         </th>
-                        <th>batch_ID</th>
+                        <th>Batch_ID</th>
                         <!-- <th></th> -->
                         <th (click)="sortInvoices('invoice_date')">
-                          invoice Date
+                          Invoice Date
                           <i
                             class="fa fa-sort-alpha-{{
                               sortBy === 'invoice_date' ? sortDirection : 'asc'
@@ -728,7 +700,7 @@
                           ></i>
                         </th>
                         <th (click)="sortInvoices('due_date')">
-                          due Date
+                          Due Date
                           <i
                             class="fa fa-sort-alpha-{{
                               sortBy === 'due_date' ? sortDirection : 'asc'
@@ -746,7 +718,7 @@
                           ></i>
                         </th>
                         <th (click)="sortInvoices('total_amount_due')">
-                          Invoice amount
+                          Invoice Amount
                           <i
                             class="fa fa-sort-alpha-{{
                               sortBy === 'total_amount_due' ? sortDirection : 'asc'
@@ -772,10 +744,10 @@
                             aria-hidden="true"
                           ></i>
                         </th>
-                        <th>created By</th>
+                        <th>Created By</th>
                         <th>Accepted By</th>
-                        <th>disbursed by</th>
-                        <th>action</th>
+                        <th>Disbursed by</th>
+                        <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -867,7 +839,7 @@
                                 class="fa fa-check-square-o"
                                 aria-hidden="true"
                               ></i>
-                              disbursed
+                              Disbursed
                             </button>
                             
                           </td>
@@ -979,15 +951,10 @@
             </div>
   
             <div *ngIf="showPrograms">
-              <!-- <div class="row pt-3">
-                <div class="col text-center">
-                  <h3>all Batch of invoices</h3>
-                </div>
-              </div> -->
               <div class="serchMain">
                 <div class="search-box">
                   <div class="form-group1" id="limit">
-                    <label for="limit">Limit: </label>
+                    <label for="limit">Entries per page: </label>
                     <select
                       id="status"
                       [(ngModel)]="limit"
@@ -1012,7 +979,7 @@
                   <div class="form-group">
                     <label for="status">Region:</label>
                     <select id="status" [(ngModel)]="region" class="form-control">
-                      <option value="">Select reigon</option>
+                      <option value="">Select Reigon</option>
                       <option value="south">South</option>
                       <option value="north">North</option>
                       <option value="east">East</option>
@@ -1031,19 +998,7 @@
                       <option value="dealer program">Dealer Program</option>
                     </select>
                   </div>
-                  <!-- <div class="form-group">
-                    <label for="status">Status:</label>
-                    <select id="status" [(ngModel)]="status" class="form-control">
-                      <option value="">Select Status</option>
-                      <option value="uploaded">Uploaded</option>
-                      <option value="partially accepted">
-                        Partially Accepted
-                      </option>
-                      <option value="accepted">Accepted</option>
-                      <option value="rejected">Rejected</option>
-                      <option value="disbursed">Disbursed</option>
-                    </select>
-                  </div> -->
+                  
                   <div class="form-group">
                     <label for="fileName">File Name:</label>
                     <input
@@ -1089,7 +1044,7 @@
                         ></i>
                       </th>
                       <th (click)="sortData('pancard')">
-                        Pancard
+                        Pan
                         <i
                           class="fa fa-sort-alpha-{{
                             sortBy === 'pancard' ? sortDirection : 'asc'
@@ -1106,7 +1061,7 @@
                           aria-hidden="true"
                         ></i>
                       </th>
-                      <th>Type</th>
+                      <th>Program Type</th>
                       <th>invoice FIle</th>
                       <th (click)="sortData('status')">
                         Status
@@ -1229,15 +1184,10 @@
                 </button>
               </div>
   
-              <!-- <div class="row pt-3">
-                <div class="col text-center">
-                  <h3>Invoices</h3>
-                </div>
-              </div> -->
               <div class="serchMain">
                 <div class="search-box">
                   <div class="form-group1" id="limit">
-                    <label for="limit">select limit: </label>
+                    <label for="limit">Entries per page: </label>
                     <select
                       id="status"
                       [(ngModel)]="limit"
@@ -1297,10 +1247,10 @@
                           aria-hidden="true"
                         ></i>
                       </th>
-                      <th>batch_ID</th>
+                      <th>Batch_ID</th>
                       <!-- <th></th> -->
                       <th (click)="sortInvoices('invoice_date')">
-                        invoice Date
+                        Invoice Date
                         <i
                           class="fa fa-sort-alpha-{{
                             sortBy === 'invoice_date' ? sortDirection : 'asc'
@@ -1327,7 +1277,7 @@
                         ></i>
                       </th>
                       <th (click)="sortInvoices('total_amount_due')">
-                        Invoice amount
+                        Invoice Amount
                         <i
                           class="fa fa-sort-alpha-{{
                             sortBy === 'total_amount_due' ? sortDirection : 'asc'
@@ -1353,10 +1303,10 @@
                           aria-hidden="true"
                         ></i>
                       </th>
-                      <th>created By</th>
+                      <th>Created By</th>
                       <th>Accepted By</th>
-                      <th>disbursed by</th>
-                      <th>action</th>
+                      <th>Disbursed By</th>
+                      <th>Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1605,7 +1555,7 @@
                       <button
                         class="btn btn-primary"
                         type="button"
-                        (click)="showInvoice()"
+                        (click)="rejectedInvoice()"
                       >
                         <i class="fa fa-search"></i>
                       </button>
@@ -1632,7 +1582,7 @@
                         <th>batch_ID</th>
                         <!-- <th></th> -->
                         <th (click)="sortInvoices('invoice_date')">
-                          invoice Date
+                          Invoice Date
                           <i
                             class="fa fa-sort-alpha-{{
                               sortBy === 'invoice_date' ? sortDirection : 'asc'
@@ -1641,7 +1591,7 @@
                           ></i>
                         </th>
                         <th (click)="sortInvoices('due_date')">
-                          due Date
+                          Due Date
                           <i
                             class="fa fa-sort-alpha-{{
                               sortBy === 'due_date' ? sortDirection : 'asc'
@@ -1659,7 +1609,7 @@
                           ></i>
                         </th>
                         <th (click)="sortInvoices('total_amount_due')">
-                          Invoice amount
+                          Invoice Amount
                           <i
                             class="fa fa-sort-alpha-{{
                               sortBy === 'total_amount_due' ? sortDirection : 'asc'
@@ -1685,10 +1635,10 @@
                             aria-hidden="true"
                           ></i>
                         </th>
-                        <th>created By</th>
+                        <th>Created By</th>
                         <th>Accepted By</th>
                         
-                        <th>action</th>
+                        <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -1778,38 +1728,7 @@
                             </button>
                             
                           </td>
-                          <div class="modal" tabindex="-1" id="myModalAccept" #myModalAccept>
-                            <div class="modal-dialog">
-                              <div class="modal-content">
-                                <div class="modal-header">
-                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeModelAccept()"></button>
-                                </div>
-                                <div class="modal-body">
-                                  <h5>Are you sure you want to accept this invoice ?</h5>
-                                </div>
-                                <div class="modal-footer">
-                                  <button type="button" id="accept" class="btn btn-success" data-bs-dismiss="modal" (click)="acceptInvoice()">Yes</button>
-                                  <button type="button" class="btn btn-danger" (click)="closeModelAccept()">No</button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="modal" tabindex="-1" id="myModalReject" #myModalReject>
-                            <div class="modal-dialog">
-                              <div class="modal-content">
-                                <div class="modal-header">
-                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeModelReject()"></button>
-                                </div>
-                                <div class="modal-body">
-                                  <h5>Are you sure you want to Reject this invoice ?</h5>
-                                </div>
-                                <div class="modal-footer">
-                                  <button type="button" id="accept" class="btn btn-success" data-bs-dismiss="modal" (click)="rejectInvoice()">Yes</button>
-                                  <button type="button" class="btn btn-danger" (click)="closeModelReject()">No</button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
+                          
                         </tr>
                         <tr *ngIf="expandedIndex === i">
                           <td colspan="11">

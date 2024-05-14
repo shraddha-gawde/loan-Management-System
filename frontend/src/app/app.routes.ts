@@ -9,17 +9,23 @@ import { HomeComponent } from './home/home.component';
 import { YourGuardGuard } from './app-guard.guard';
 import { NotAuthorizedComponent } from './not-authorized/not-authorized.component';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 
 export const routes: Routes = [
     {
         path: '',
-        component: HomeComponent,
-        title: 'home'
+        component: LoginComponent,
+        title: 'login page'
       },
       {
         path: 'login',
         component: LoginComponent,
         title: 'login page'
+      },
+      { 
+        path: 'forgot-password', 
+        component: ForgotPasswordComponent,
+        title: 'forget password' 
       },
       {
         path: 'adminDashboard',

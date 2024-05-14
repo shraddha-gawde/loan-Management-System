@@ -125,6 +125,7 @@ export class AdminDashboardComponent implements OnInit {
       this.model.nativeElement.style.display = 'none';
     }
   }
+  errorMessage: string | null = null;
 
   saveUser() {
     this.httpClient
@@ -139,6 +140,26 @@ export class AdminDashboardComponent implements OnInit {
         },
         (error) => {
           console.error('Failed to add user:', error);
+          if (error.status === 400) {
+            // Bad request error, handle specific error messages
+            if (error.error.msg === "Password and confirm password do not match") {
+              this.errorMessage = "Password and confirm password do not match";
+            } else if (error.error.msg === "user with the same username already exists") {
+              this.errorMessage = "User with the same username already exists";
+            } else if (error.error.msg === "user with the same email already exists") {
+              this.errorMessage = "User with the same email already exists";
+            }else if(error.error.msg === "Cannot register, password must contain at least 1 character, one capital letter, and minimum length 8"){
+              this.errorMessage = "Cannot register, password must contain at least 1 character, one capital letter, one number and minimum length 8";
+            }else if(error.error.msg === 'Phone number must be 10 digits long'){
+              this.errorMessage= "Phone number must be 10 digits long";
+            }
+             else {
+              this.errorMessage = "Unknown error: " + error.error.msg;
+            }
+          } else {
+            // Handle other types of errors (e.g., server errors)
+            this.errorMessage = "Server error: " + error.message;
+          }
         }
       );
   }
@@ -182,6 +203,7 @@ export class User {
   userID: string = '';
   username: string = '';
   password: string = '';
+  confirmPassword: string = "";
   roleID: string = '';
   companyName: string = '';
   contactPerson: string = '';

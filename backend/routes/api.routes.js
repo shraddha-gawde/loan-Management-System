@@ -17,13 +17,17 @@ const upload = require("../middlewares/multer.middleware");
 const { disburseInvoiceByFinancier, getAllInvoicesAcceptedBySellers, getAllInvoicesrejected } = require("../controller/finacier.controller");
 const { getInvoicesByStatus, getCountByDate, countbatches, totalBatches, disburseAmounts, disburseAmountsSeller, totalinvoicesAccepted, disburseAmountsFinancier, getInvoicesByStatusSeller, getCountByDateFinancier, getInvoicesByStatusFinance, getRatesByDate } = require("../controller/charts.controller");
 const { report, reportSeller, reportFinancier } = require("../controller/report.controller");
+const { sendOTP, createpassword } = require("../controller/forgetpassword.controller");
 
 router.use(express.json())
+
 
 // routes
 router.post("/admin/register", registerAdmin)
 router.post("/user/login", login)
 router.get("/download/:id", downloadExcel)
+router.post("/send-otp", sendOTP)
+router.patch("/forgotPassword", createpassword)
 router.get('/count-users', countUsersByRole);
 // auth middleware for authentication
 router.use(auth)

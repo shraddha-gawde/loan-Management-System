@@ -47,7 +47,7 @@ export class PieChartSellerComponent {
     const myChart = new Chart('piechart', {
       type: 'doughnut',
       data: {
-        labels: ['Accepted', 'Rejected' ,'disbursed'],
+        labels: ['Accepted', 'Rejected' ,'Disbursed'],
         datasets: [
           {
             label: 'Status Analysis',

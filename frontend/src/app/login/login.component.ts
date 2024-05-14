@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'demo-login',
   standalone: true,
-  imports: [HttpClientModule, CommonModule, FormsModule],
+  imports: [HttpClientModule, CommonModule, FormsModule, RouterLink],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -30,8 +30,6 @@ export class LoginComponent {
         next: (response:any) => {
           localStorage.clear()
           console.log('Login successful:', response);
-          // console.log(response.user)
-          // const user = response.user
           localStorage.setItem("token", response.access_token)
           localStorage.setItem("user", JSON.stringify(response.user.username))
           localStorage.setItem("role",response.role.role)
